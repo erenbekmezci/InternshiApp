@@ -1,0 +1,23 @@
+{
+    "applications": [
+      {
+        "id": 1,
+        "advertId": 1,
+        "userId": 101,
+        "status": "waiting"
+      },
+      {
+        "id": 2,
+        "advertId": 1,
+        "userId": 102,
+        "status": "accepted"
+      },
+      {
+        "id": 3,
+        "advertId": 2,
+        "userId": 103,
+        "status": "waiting"
+      }
+    ]
+  }
+  

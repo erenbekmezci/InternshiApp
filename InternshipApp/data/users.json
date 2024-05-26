@@ -1,0 +1,41 @@
+{
+    "users": [
+      {
+        "id": 101,
+        "email": "c",
+        "username": "John Doe",
+        "password": "c",
+        "photo": "base64-encoded-string",
+        "role": "company",
+        "phone": "123-456-7890",
+        "resume": "Experienced student in software development.",
+        "education": "BSc in Computer Science",
+        "location": "New York, NY"
+      },
+      {
+        "id": 102,
+        "email": "s",
+        "username": "Jane Smith",
+        "password": "s",
+        "photo": "base64-encoded-string",
+        "role": "student",
+        "phone": "098-765-4321",
+        "resume": "Marketing specialist with 5 years of experience.",
+        "education": "MBA in Marketing",
+        "location": "Los Angeles, CA"
+      },
+      {
+        "id": 103,
+        "email": "alice@example.com",
+        "username": "Alice Johnson",
+        "password": "password123",
+        "photo": "base64-encoded-string",
+        "role": "student",
+        "phone": "555-555-5555",
+        "resume": "Graphic designer with a passion for creating stunning visuals.",
+        "education": "BA in Graphic Design",
+        "location": "Chicago, IL"
+      }
+    ]
+  }
+  

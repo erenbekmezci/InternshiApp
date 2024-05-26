@@ -1,0 +1,49 @@
+{
+  "adverts": [
+    {
+      "id": 1,
+      "userId": 1001,
+      "username": "TechCorp",
+      "profilePicture": "base64-encoded-string-for-techcorp",
+      "title": "Senior Software Developer",
+      "context": "Looking for an experienced software developer to join our dynamic team. Responsibilities include developing and maintaining high-quality software applications.",
+      "skills": "JavaScript, React, Node.js",
+      "startDate": "2024-06-01",
+      "endDate": "2024-12-31",
+      "location": "San Francisco, CA",
+      "acceptText": "Congratulations! You have been accepted for the Senior Software Developer position.",
+      "rejectText": "Thank you for applying. Unfortunately, you have not been selected for the Senior Software Developer position.",
+      "applicationCount": 25
+    },
+    {
+      "id": 2,
+      "userId": 1002,
+      "username": "GreenSolutions",
+      "profilePicture": "base64-encoded-string-for-greensolutions",
+      "title": "Project Manager",
+      "context": "Seeking a skilled project manager with experience in managing large-scale environmental projects. Must have excellent leadership skills and the ability to meet tight deadlines.",
+      "skills": "Project Management, Leadership, Environmental Science",
+      "startDate": "2024-07-01",
+      "endDate": "2024-12-31",
+      "location": "New York, NY",
+      "acceptText": "Congratulations! You have been accepted for the Project Manager position.",
+      "rejectText": "Thank you for applying. Unfortunately, you have not been selected for the Project Manager position.",
+      "applicationCount": 40
+    },
+    {
+      "id": 3,
+      "userId": 1003,
+      "username": "HealthPlus",
+      "profilePicture": "base64-encoded-string-for-healthplus",
+      "title": "Registered Nurse",
+      "context": "Immediate opening for a registered nurse to provide quality patient care in a fast-paced emergency room setting. Candidates must have a valid nursing license.",
+      "skills": "Nursing, Patient Care, Emergency Room",
+      "startDate": "2024-08-01",
+      "endDate": "2024-12-31",
+      "location": "Chicago, IL",
+      "acceptText": "Congratulations! You have been accepted for the Registered Nurse position.",
+      "rejectText": "Thank you for applying. Unfortunately, you have not been selected for the Registered Nurse position.",
+      "applicationCount": 35
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+    "posts": [
+      {
+        "id": 1,
+        "username": "user1",
+        "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwc...",
+        "title": "Güzel Bir Gün",
+        "postImage": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwc..."
+      },
+      {
+        "id": 2,
+        "username": "user2",
+        "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwc...",
+        "title": "Harika Manzara",
+        "postImage": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwc..."
+      },
+      {
+        "id": 3,
+        "username": "user3",
+        "profilePicture": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwc...",
+        "title": "Yeni Başlangıçlar",
+        "postImage": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwc..."
+      }
+    ]
+  }
+  
