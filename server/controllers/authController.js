@@ -1,46 +1,68 @@
-const User = require("../models/user");
+const { User, Company } = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports.register = async (req, res) => {
-  console.log("registssser");
-  const { email, username, password, phone } = req.body;
+  console.log("asd");
+  const { email, username, password, phone, role, companyName } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
-      email,
-      username,
-      password: hashedPassword,
-      phone,
-      role: "student", // default role
-    });
-    const newUser = await user.save();
-    console.log("asd");
-    res.status(201).json(newUser);
+    let newUser;
+    console.log(phone);
+
+    if (role === "company") {
+      console.log("assd");
+
+      // Şirket ise Company modelini kullanarak kaydedin
+      newUser = new Company({
+        email,
+        username,
+        password: hashedPassword,
+        phone,
+        role,
+        companyName,
+      });
+      console.log("asdsd");
+    } else {
+      newUser = new User({
+        email,
+        username,
+        password: hashedPassword,
+        phone,
+        role,
+      });
+    }
+    console.log("1asd")
+    console.log("savedUser", newUser)
+
+    const savedUser = await newUser.save();
+    console.log("savedUser", savedUser)
+
+    res.status(201).json(savedUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
-
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email);
+
   try {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    console.log(user);
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    console.log("sadas");
+    console.log("role", user.role);
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.ACCESS_TOKEN_SECRET
+    );
 
-    const token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET);
-    console.log(token);
-    res.json({ token, userId: user._id });
+    res.json({ token, userId: user._id, role: user.role });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

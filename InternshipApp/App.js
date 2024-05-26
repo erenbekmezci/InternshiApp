@@ -198,10 +198,11 @@ function NavigationScreens() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {user ? (
-        <>
-          <Stack.Screen name="Tab" component={TabScreens} />
+        user.role === "company" ? (
           <Stack.Screen name="CTab" component={CTabScreen} />
-        </>
+        ) : (
+          <Stack.Screen name="Tab" component={TabScreens} />
+        )
       ) : (
         <Stack.Screen name="Stack" component={StackScreens} />
       )}

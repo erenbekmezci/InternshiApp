@@ -1,47 +1,28 @@
 const mongoose = require("../db/db");
+const { Schema } = mongoose;
 
-const userSchema = new mongoose.Schema({
-
-email: {
-    type: String,
-    required: true,
-    unique: true,
+const userSchema = new Schema(
+  {
+    email: { type: String, required: true, unique: true },
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+    photo: { type: String },
+    role: { type: String, enum: ["user", "company"], required: true },
+    phone: { type: String },
+    resume: { type: String },
+    education: { type: String },
+    location: { type: String },
   },
-  username: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  photo: {
-    type: String,
-    required: false,
-  },
-  role: {
-    type: String,
-    enum: ["company", "student"],
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: false,
-  },
-  resume: {
-    type: String,
-    required: false,
-  },
-  education: {
-    type: String,
-    required: false,
-  },
-  location: {
-    type: String,
-    required: false,
-  },
-});
+  { discriminatorKey: "role", timestamps: true }
+);
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+const companySchema = new Schema({
+  companyName: { type: String, required: true },
+  companyDetails: { type: String },
+});
+
+const Company = User.discriminator("company", companySchema);
+
+module.exports = { User, Company };

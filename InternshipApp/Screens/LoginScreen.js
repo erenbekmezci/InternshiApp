@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-
 import { AuthContext } from "../src/context/AuthContext";
 
 const LoginScreen = ({ navigation }) => {
@@ -32,6 +31,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setEmail}
         value={email}
         keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         placeholder="Password"

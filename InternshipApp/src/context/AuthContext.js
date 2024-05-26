@@ -33,9 +33,9 @@ export const AuthProvider = ({ children }) => {
       password,
     });
     if (response.status === 200) {
-      const { token, userId } = response.data;
+      const { token, userId, role } = response.data;
       await AsyncStorage.setItem("token", token);
-      setUser({ id: userId });
+      setUser({ id: userId, role });
     }
   };
 

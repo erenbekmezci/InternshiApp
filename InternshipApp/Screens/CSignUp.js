@@ -16,8 +16,7 @@ const CSignUp = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
-  const [resume, setResume] = useState("");
-  const [location, setLocation] = useState("");
+  const [companyName, setCompanyName] = useState("");
 
   const handleSignUp = async () => {
     try {
@@ -27,9 +26,7 @@ const CSignUp = ({ navigation }) => {
         username,
         role: "company",
         phone,
-        resume,
-        education: "",
-        location,
+        companyName,
       });
 
       if (response.status === 201) {
@@ -69,7 +66,7 @@ const CSignUp = ({ navigation }) => {
 
         <TextInput
           style={styles.input}
-          placeholder="Firma Adı"
+          placeholder="Kullanıcı Adı"
           value={username}
           onChangeText={setUsername}
           placeholderTextColor="#999"
@@ -86,18 +83,10 @@ const CSignUp = ({ navigation }) => {
 
         <TextInput
           style={styles.input}
-          placeholder="Firma Açıklaması"
-          value={resume}
-          onChangeText={setResume}
+          placeholder="Firma adı"
+          value={companyName}
+          onChangeText={setCompanyName}
           multiline
-          placeholderTextColor="#999"
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Konum"
-          value={location}
-          onChangeText={setLocation}
           placeholderTextColor="#999"
         />
 

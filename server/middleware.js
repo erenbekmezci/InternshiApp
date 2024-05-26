@@ -1,22 +1,19 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-  //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3MDg0MzA2ODIsImV4cCI6MTcwODQzMDY5Mn0.3Xv4HynKEArrkqtSoeadkznyRdNcaI1ov_JCVLCJuMY
+  const token = req.headers.authorization?.split(" ")[1];
 
-  const token = req.headers["authorization"]?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Giris yapin." });
- 
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
 
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      return res.status(401).json("Token geçerli değil");
-    }
-    req.user = user;
-   
-
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = { id: decoded.id, role: decoded.role };
     next();
-  });
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
 };
 
 module.exports = authMiddleware;
