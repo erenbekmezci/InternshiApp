@@ -8,10 +8,10 @@ module.exports.register = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     let newUser;
-    console.log(phone);
+
 
     if (role === "company") {
-      console.log("assd");
+  
 
       // Şirket ise Company modelini kullanarak kaydedin
       newUser = new Company({
@@ -22,7 +22,7 @@ module.exports.register = async (req, res) => {
         role,
         companyName,
       });
-      console.log("asdsd");
+
     } else {
       newUser = new User({
         email,
@@ -32,12 +32,10 @@ module.exports.register = async (req, res) => {
         role,
       });
     }
-    console.log("1asd")
-    console.log("savedUser", newUser)
+ 
 
     const savedUser = await newUser.save();
-    console.log("savedUser", savedUser)
-
+    
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(400).json({ message: err.message });

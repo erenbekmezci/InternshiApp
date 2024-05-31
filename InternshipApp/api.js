@@ -8,13 +8,19 @@ const api = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
+    console.log("config", config.url);
     const token = await AsyncStorage.getItem("token");
+    console.log("token", token);
+
     if (token) {
+      console.log("yara");
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
+    console.log("yarrrrra");
+
     return Promise.reject(error);
   }
 );

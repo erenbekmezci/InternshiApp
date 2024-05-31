@@ -23,7 +23,7 @@ const SignUp = ({ navigation }) => {
   const handleSignUp = async () => {
     try {
       console.log("e", password);
-      const response = await api.post(`${SERVER_URL}/auth/register`, {
+      const response = await api.post(`/auth/register`, {
         email,
         password,
         username: name,

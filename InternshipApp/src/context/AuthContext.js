@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       const token = await AsyncStorage.getItem("token");
       if (token) {
         try {
-          const response = await api.get(`${SERVER_URL}/auth/verifyToken`);
+          const response = await api.get(`/auth/verifyToken`);
           if (response.status === 200) {
             setUser(response.data.user);
           } else {
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const response = await api.post(`${SERVER_URL}/auth/login`, {
+    const response = await api.post(`/auth/login`, {
       email,
       password,
     });

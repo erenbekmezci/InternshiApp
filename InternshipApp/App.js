@@ -19,6 +19,7 @@ import CAdvertDetailsScreen from "./Screens/CAdvertDetailsScreen";
 import CApplicationsScreen from "./Screens/CApplicationsScreen";
 import CSignUp from "./Screens/CSignUp";
 import CreateAdvertScreen from "./Screens/CreateAdvertScreen";
+import EditAdvertScreen from "./Screens/EditAdvertScreen";
 import ApplicantProfileScreen from "./Screens/ApplicantProfileScreen";
 import ApplicationDetailsScreen from "./Screens/ApplicationDetailsScreen";
 import { AuthProvider, AuthContext } from "./src/context/AuthContext";
@@ -53,6 +54,10 @@ function CAdvertStackScreen() {
       <CAdvertsStack.Screen
         name="CAdvertDetailsScreen"
         component={CAdvertDetailsScreen}
+      />
+      <CAdvertsStack.Screen
+        name="EditAdvertScreen"
+        component={EditAdvertScreen}
       />
       <CAdvertsStack.Screen
         name="CApplicationsScreen"

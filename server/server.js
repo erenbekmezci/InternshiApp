@@ -19,5 +19,5 @@ httpServer.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
 
-// Diğer yolları yükleme (yorumdan çıkardım)
+
 require("./routes/routesManager.js")(app);

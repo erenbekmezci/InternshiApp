@@ -1,3 +1,5 @@
+// Screens/EditAdvertScreen.js
+
 import React, { useState } from "react";
 import {
   SafeAreaView,
@@ -11,44 +13,47 @@ import {
 } from "react-native";
 import api from "../api";
 
-const CreateAdvertScreen = ({ navigation }) => {
-  const [title, setTitle] = useState("");
-  const [context, setContext] = useState("");
-  const [skills, setSkills] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [location, setLocation] = useState("");
-  const [acceptText, setAcceptText] = useState("");
-  const [rejectText, setRejectText] = useState("");
+const EditAdvertScreen = ({ route, navigation }) => {
+  const { advert } = route.params;
 
-  const handleCreateAdvert = async () => {
-    const newAdvert = {
-      title,
-      context,
-      skills,
-      startDate,
-      endDate,
-      location,
-      acceptText,
-      rejectText,
-    };
+  const [title, setTitle] = useState(advert.title);
+  const [context, setContext] = useState(advert.context);
+  const [skills, setSkills] = useState(advert.skills);
+  const [startDate, setStartDate] = useState(advert.startDate);
+  const [endDate, setEndDate] = useState(advert.endDate);
+  const [location, setLocation] = useState(advert.location);
+  const [acceptText, setAcceptText] = useState(advert.acceptText);
+  const [rejectText, setRejectText] = useState(advert.rejectText);
 
+  const handleUpdateAdvert = async () => {
     try {
-      await api.post("/adverts", newAdvert);
-      navigation.goBack();
+      const response = await api.put(`/adverts/${advert._id}`, {
+        title,
+        context,
+        skills,
+        startDate,
+        endDate,
+        location,
+        acceptText,
+        rejectText,
+      });
+
+      const updatedAdvert = response.data;
+      navigation.navigate("CAdvertDetailsScreen", {
+        advertId: updatedAdvert._id,
+      });
+      Alert.alert("Success", "Advert updated successfully");
     } catch (error) {
-      console.error("Error creating advert:", error);
-      Alert.alert("Error", "Failed to create advert");
+      Alert.alert("Error", "An error occurred while updating advert");
     }
   };
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.scrollContent}
       >
-        <Text style={styles.title}>Yeni İlan Oluştur</Text>
+        <Text style={styles.title}>İlanı Düzenle</Text>
 
         <Text style={styles.label}>İlan Başlığı</Text>
         <TextInput
@@ -122,10 +127,11 @@ const CreateAdvertScreen = ({ navigation }) => {
           placeholder="Reddetme Mesajı"
           placeholderTextColor="#999"
         />
+
+        <TouchableOpacity style={styles.button} onPress={handleUpdateAdvert}>
+          <Text style={styles.buttonText}>Güncelle</Text>
+        </TouchableOpacity>
       </ScrollView>
-      <TouchableOpacity style={styles.fab} onPress={handleCreateAdvert}>
-        <Text style={styles.fabText}>İlan Oluştur</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -164,23 +170,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     backgroundColor: "#fff",
   },
-  fab: {
-    position: "absolute",
-    right: 20,
-    bottom: 20,
+  button: {
     backgroundColor: "#1C1678",
-    width: 140,
-    height: 50,
-    borderRadius: 25,
+    padding: 15,
+    borderRadius: 5,
     alignItems: "center",
-    justifyContent: "center",
-    elevation: 5,
+    marginTop: 20,
   },
-  fabText: {
-    color: "#fff",
+  buttonText: {
+    color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
 });
 
-export default CreateAdvertScreen;
+export default EditAdvertScreen;

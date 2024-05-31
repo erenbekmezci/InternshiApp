@@ -1,12 +1,45 @@
-import React from 'react';
-import { SafeAreaView, View, Text, Button, ScrollView, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import advertsData from "../data/Adverts.json";
+import React from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Button,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import api from "../api";
 
 const CAdvertDetailsScreen = ({ route, navigation }) => {
   const { advertId } = route.params;
+  const [advert, setAdvert] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
-  const advert = advertsData.adverts.find(ad => ad.id === advertId);
+  const fetchAdvert = async () => {
+    try {
+      const response = await api.get(`/adverts/${advertId}`);
+      setAdvert(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching advert:", error);
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchAdvert();
+  }, [advertId, fetchAdvert]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.loadingContainer}>
+          <Text>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (!advert) {
     return (
@@ -19,7 +52,11 @@ const CAdvertDetailsScreen = ({ route, navigation }) => {
   }
 
   const handleViewApplications = () => {
-    navigation.navigate('CApplicationsScreen', { advertId: advert.id });
+    navigation.navigate("CApplicationsScreen", { advertId: advert._id });
+  };
+
+  const handleEditAdvert = () => {
+    navigation.navigate("EditAdvertScreen", { advert });
   };
 
   return (
@@ -40,38 +77,50 @@ const CAdvertDetailsScreen = ({ route, navigation }) => {
           </View>
           <View style={styles.applicationCountContainer}>
             <FontAwesome name="users" size={16} color="#1C1678" />
-            <Text style={styles.applicationCountText}>{advert.applicationCount} Başvuru</Text>
+            <Text style={styles.applicationCountText}>
+              {advert.applicationCount} Başvuru
+            </Text>
           </View>
-          <Button 
-            title="Başvuruları görüntüle" 
-            onPress={handleViewApplications} 
-            color="#1C1678" 
+          <Button
+            title="Başvuruları görüntüle"
+            onPress={handleViewApplications}
+            color="#1C1678"
           />
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={handleEditAdvert}
+          >
+            <FontAwesome name="edit" size={24} color="#1C1678" />
+            <Text style={styles.editButtonText}>Düzenle</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default CAdvertDetailsScreen;
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   container: {
     flex: 1,
-    backgroundColor: '#F6F5F2',
+    backgroundColor: "#F6F5F2",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   infoContainer: {
     paddingHorizontal: 20,
   },
   adTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1C1678',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#1C1678",
+    textAlign: "center",
     marginBottom: 20,
   },
   detailsContainer: {
@@ -79,33 +128,50 @@ const styles = StyleSheet.create({
   },
   detailsTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1C1678',
+    fontWeight: "bold",
+    color: "#1C1678",
     marginTop: 10,
   },
   detailsContent: {
     fontSize: 16,
-    color: '#1C1678',
+    color: "#1C1678",
     marginBottom: 10,
     lineHeight: 24,
     padding: 15,
     borderRadius: 12,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 1.5,
   },
   applicationCountContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   applicationCountText: {
     fontSize: 16,
-    color: '#1C1678',
+    color: "#1C1678",
     marginLeft: 5,
   },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F6F5F2",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  editButtonText: {
+    color: "#1C1678",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
 });
+
+export default CAdvertDetailsScreen;
