@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import api from "../api";
 
 const AdvertsScreen = () => {
@@ -18,25 +18,27 @@ const AdvertsScreen = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAdvertsAndApplications = async () => {
-      try {
-        const [advertsResponse, applicationsResponse] = await Promise.all([
-          api.get("/adverts/all/5"),
-          api.get("/applications/myapp"), // Endpoint to fetch user applications
-        ]);
-        setAdverts(advertsResponse.data);
-        setApplications(applicationsResponse.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        Alert.alert("Error", "Could not fetch data. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchAdvertsAndApplications = async () => {
+    try {
+      const [advertsResponse, applicationsResponse] = await Promise.all([
+        api.get("/adverts/all/5"),
+        api.get("/applications/myapp"), // Endpoint to fetch user applications
+      ]);
+      setAdverts(advertsResponse.data);
+      setApplications(applicationsResponse.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      Alert.alert("Error", "Could not fetch data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchAdvertsAndApplications();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAdvertsAndApplications();
+    }, [])
+  );
 
   const hasApplied = (advertId) => {
     return applications.some((app) => app.advertId === advertId);

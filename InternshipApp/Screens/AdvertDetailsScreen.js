@@ -9,20 +9,34 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import api from "../api";
 
 const AdvertDetailsScreen = ({ route }) => {
   const { advertId } = route.params;
+  const navigation = useNavigation();
   const [advert, setAdvert] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasApplied, setHasApplied] = useState(false);
 
   useEffect(() => {
     const fetchAdvert = async () => {
       try {
-        const response = await api.get(`/adverts/${advertId}`);
-        setAdvert(response.data);
+        const [advertResponse, applicationsResponse] = await Promise.all([
+          api.get(`/adverts/${advertId}`),
+          api.get("/applications/myapp"),
+        ]);
+
+        setAdvert(advertResponse.data);
+
+        const userApplications = applicationsResponse.data;
+        const applied = userApplications.some(
+          (application) => application.advertId === advertId
+        );
+
+        setHasApplied(applied);
       } catch (error) {
-        console.error("Error fetching advert:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -35,6 +49,8 @@ const AdvertDetailsScreen = ({ route }) => {
     try {
       await api.post(`/adverts/apply/${advertId}`);
       Alert.alert("Success", "Application successful");
+      setHasApplied(true); // Update the state to reflect the application
+      navigation.goBack(); // Navigate back to the previous screen
     } catch (error) {
       Alert.alert("Error", error.response.data.message || "An error occurred");
     }
@@ -79,7 +95,11 @@ const AdvertDetailsScreen = ({ route }) => {
               {new Date(advert.endDate).toLocaleDateString()}
             </Text>
           </View>
-          <Button title="Başvur" onPress={handleApply} color="#1C1678" />
+          {hasApplied ? (
+            <Text style={styles.appliedText}>Bu ilana başvurdunuz</Text>
+          ) : (
+            <Button title="Başvur" onPress={handleApply} color="#1C1678" />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -138,6 +158,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 1.5,
+  },
+  appliedText: {
+    fontSize: 18,
+    color: "#1C1678",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
 

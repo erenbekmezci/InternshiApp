@@ -1,41 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import applicationsData from "../data/Applications.json";
-import usersData from "../data/users.json";
+import React, { useState, useEffect } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import api from "../api";
 
 const ApplicantProfileScreen = ({ route, navigation }) => {
   const { applicantId, applicationId } = route.params;
   const [applicant, setApplicant] = useState(null);
   const [application, setApplication] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const applicantData = usersData.users.find(user => user.id === applicantId);
-    const applicationData = applicationsData.applications.find(app => app.id === applicationId);
+    const fetchApplicantProfile = async () => {
+      try {
+        const response = await api.get(
+          `/applications/profile/${applicantId}/${applicationId}`
+        );
+        setApplicant(response.data.applicant);
+        setApplication(response.data.application);
+      } catch (error) {
+        console.error("Error fetching applicant profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setApplicant(applicantData);
-    setApplication(applicationData);
+    fetchApplicantProfile();
   }, [applicantId, applicationId]);
 
-  const handleUpdateStatus = (status) => {
-    // Dummy data üzerinde durumu güncelleme
-    const applicationIndex = applicationsData.applications.findIndex(app => app.id === applicationId);
-    if (applicationIndex > -1) {
-      applicationsData.applications[applicationIndex].status = status;
-      setApplication({ ...applicationsData.applications[applicationIndex] });
-      console.log(`Application ${applicationId} status updated to ${status}`);
+  const handleUpdateStatus = async (status) => {
+    try {
+      const response = await api.put(`/applications/status/${applicationId}`, {
+        status,
+      });
+      setApplication(response.data);
+      Alert.alert("Success", `Application ${status}`);
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      Alert.alert("Error", "Failed to update application status");
     }
-
-    // Gerçek uygulamada backend'e güncelleme isteği gönderilecek
-    // axios.post('/api/update-application-status', { applicationId, status });
-
-    navigation.goBack();
   };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color="#1C1678" />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (!applicant || !application) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Text>Loading...</Text>
+          <Text>No applicant or application found.</Text>
         </View>
       </SafeAreaView>
     );
@@ -45,7 +74,10 @@ const ApplicantProfileScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.profilePicContainer}>
-          <Image source={{ uri: `data:image/jpeg;base64,${applicant.photo}` }} style={styles.profilePic} />
+          <Image
+            source={{ uri: `data:image/jpeg;base64,${applicant.photo}` }}
+            style={styles.profilePic}
+          />
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.name}>{applicant.username}</Text>
@@ -58,13 +90,25 @@ const ApplicantProfileScreen = ({ route, navigation }) => {
             <Text style={styles.detailsContent}>{applicant.resume}</Text>
             <Text style={styles.detailsTitle}>Education</Text>
             <Text style={styles.detailsContent}>{applicant.education}</Text>
+            <Text style={styles.detailsTitle}>Application Status</Text>
+            <Text style={styles.detailsContent}>{application.status}</Text>
+            <Text style={styles.detailsTitle}>Application Date</Text>
+            <Text style={styles.detailsContent}>
+              {new Date(application.createdAt).toLocaleDateString()}
+            </Text>
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button, styles.acceptButton]} onPress={() => handleUpdateStatus('accepted')}>
-              <Text style={styles.buttonText}>Kabul Et</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.acceptButton]}
+              onPress={() => handleUpdateStatus("accepted")}
+            >
+              <Text style={styles.buttonText}>Accept</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.rejectButton]} onPress={() => handleUpdateStatus('rejected')}>
-              <Text style={styles.buttonText}>Reddet</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.rejectButton]}
+              onPress={() => handleUpdateStatus("rejected")}
+            >
+              <Text style={styles.buttonText}>Reject</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -78,13 +122,13 @@ export default ApplicantProfileScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F6F5F2',
+    backgroundColor: "#F6F5F2",
   },
   container: {
     flex: 1,
   },
   profilePicContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 20,
   },
   profilePic: {
@@ -97,9 +141,9 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1C1678',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#1C1678",
+    textAlign: "center",
     marginBottom: 20,
   },
   contactInfo: {
@@ -107,55 +151,55 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 16,
-    backgroundColor: '#1C1678',
-    color: '#F6F5F2',
+    backgroundColor: "#1C1678",
+    color: "#F6F5F2",
     padding: 10,
     marginBottom: 10,
     borderRadius: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   detailsContainer: {
     marginTop: 20,
   },
   detailsTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1C1678',
+    fontWeight: "bold",
+    color: "#1C1678",
     marginBottom: 10,
   },
   detailsContent: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
     lineHeight: 24,
     padding: 15,
     borderRadius: 12,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 1.5,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginTop: 30,
   },
   button: {
     width: 150,
     paddingVertical: 10,
     borderRadius: 25,
-    alignItems: 'center',
+    alignItems: "center",
   },
   acceptButton: {
-    backgroundColor: '#1C1678',
+    backgroundColor: "#1C1678",
   },
   rejectButton: {
-    backgroundColor: '#8B0000',
+    backgroundColor: "#8B0000",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

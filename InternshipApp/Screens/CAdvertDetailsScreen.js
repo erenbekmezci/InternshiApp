@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import api from "../api";
 
 const CAdvertDetailsScreen = ({ route, navigation }) => {
@@ -27,9 +28,11 @@ const CAdvertDetailsScreen = ({ route, navigation }) => {
     }
   };
 
-  React.useEffect(() => {
-    fetchAdvert();
-  }, [advertId, fetchAdvert]);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAdvert();
+    }, [advertId])
+  );
 
   if (loading) {
     return (

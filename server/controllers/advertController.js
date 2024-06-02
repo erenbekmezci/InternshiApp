@@ -59,21 +59,22 @@ exports.getAdvertsById = async (req, res) => {
 exports.deleteAdvert = async (req, res) => {
   try {
     const advert = await Advert.findById(req.params.id);
-
     if (!advert) {
       return res.status(404).json({ message: "Advert not found" });
     }
 
     if (advert.companyId.toString() !== req.user.id) {
-      console.log("advert");
-
       return res.status(403).json({ message: "Unauthorized" });
     }
 
-    await Advert.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Advert deleted successfully" });
+    await Application.deleteMany({ advertId: req.params.id });
+
+    await Advert.findByIdAndDelete(req.params.id); // İlanı silin
+
+    res.status(200).json({
+      message: "Advert and related applications deleted successfully",
+    });
   } catch (error) {
-    console.error("er", error);
     res.status(500).json({ message: error.message });
   }
 };

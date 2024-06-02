@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { SERVER_URL } from "@env";
+
 import api from "../api";
 
 const CSignUp = ({ navigation }) => {
@@ -20,7 +20,7 @@ const CSignUp = ({ navigation }) => {
 
   const handleSignUp = async () => {
     try {
-      const response = await api.post(`${SERVER_URL}/auth/register`, {
+      const response = await api.post(`/auth/register`, {
         email,
         password,
         username,

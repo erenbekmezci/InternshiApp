@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,47 +8,52 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import api from "../api";
 
-const ApplicationsScreen = ({ navigation }) => {
+const ApplicationsScreen = () => {
+  const navigation = useNavigation();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        const response = await api.get("/applications/user");
-        setApplications(response.data);
-      } catch (error) {
-        console.error("Error fetching applications:", error);
-        Alert.alert(
-          "Error",
-          "Could not fetch applications. Please try again later."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchApplications = async () => {
+    try {
+      const response = await api.get("/applications/user");
+      setApplications(response.data);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      Alert.alert(
+        "Error",
+        "Could not fetch applications. Please try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchApplications();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchApplications();
+    }, [])
+  );
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.applicationContainer}
       onPress={() =>
         navigation.navigate("ApplicationDetailsScreen", {
-          applicationId: item.id,
-          advertId: item.advert._id,
+          applicationId: item._id,
+          advertId: item.advertId._id,
         })
       }
     >
       <View style={styles.adInfo}>
-        <Text style={styles.adTitle}>{item.advert.title}</Text>
-        <Text style={styles.companyName}>{item.advert.companyId.username}</Text>
-        <Text style={styles.location}>{item.advert.location}</Text>
+        <Text style={styles.adTitle}>{item.advertId.title}</Text>
+        <Text style={styles.companyName}>
+          {item.advertId.companyId.username}
+        </Text>
+        <Text style={styles.location}>{item.advertId.location}</Text>
       </View>
       <View style={styles.iconContainer}>
         {item.status === "pending" && (
@@ -72,7 +77,7 @@ const ApplicationsScreen = ({ navigation }) => {
         <FlatList
           data={applications}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item._id}
         />
       )}
     </View>

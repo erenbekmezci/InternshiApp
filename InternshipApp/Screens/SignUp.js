@@ -16,18 +16,15 @@ const SignUp = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [resume, setResume] = useState("");
-  const [education, setEducation] = useState("");
-  const [location, setLocation] = useState("");
 
   const handleSignUp = async () => {
     try {
-      console.log("e", password);
+      console.log("e", name);
       const response = await api.post(`/auth/register`, {
         email,
         password,
         username: name,
-        role: "student",
+        role: "user",
         phone,
       });
 
@@ -80,32 +77,6 @@ const SignUp = ({ navigation }) => {
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
-          placeholderTextColor="#999"
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Özgeçmiş"
-          value={resume}
-          onChangeText={setResume}
-          multiline
-          placeholderTextColor="#999"
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Aldığı Eğitimler"
-          value={education}
-          onChangeText={setEducation}
-          multiline
-          placeholderTextColor="#999"
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Konum"
-          value={location}
-          onChangeText={setLocation}
           placeholderTextColor="#999"
         />
 
