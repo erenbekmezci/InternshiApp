@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -8,7 +8,8 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import api from "../api";
 
 const CSignUp = ({ navigation }) => {
@@ -17,6 +18,34 @@ const CSignUp = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [expoPushToken, setExpoPushToken] = useState("");
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+  }, []);
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+    return token;
+  };
 
   const handleSignUp = async () => {
     try {
@@ -27,6 +56,7 @@ const CSignUp = ({ navigation }) => {
         role: "company",
         phone,
         companyName,
+        expoPushToken,
       });
 
       if (response.status === 201) {

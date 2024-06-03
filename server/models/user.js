@@ -12,6 +12,7 @@ const userSchema = new Schema(
     resume: { type: String },
     education: { type: String },
     location: { type: String },
+    expoPushToken: { type: String }, // Yeni alan eklendi
   },
   { discriminatorKey: "role", timestamps: true }
 );

@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports.register = async (req, res) => {
-  console.log("asd");
-  const { email, username, password, phone, role, companyName } = req.body;
+  const { email, username, password, phone, role, companyName, expoPushToken } =
+    req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     let newUser;
@@ -18,29 +18,28 @@ module.exports.register = async (req, res) => {
         phone,
         role,
         companyName,
+        expoPushToken,
       });
     } else {
-      console.log("sdasd");
-
       newUser = new User({
         email,
         username,
         password: hashedPassword,
         phone,
         role,
+        expoPushToken,
       });
-      console.log("newUser", newUser);
     }
 
     const savedUser = await newUser.save();
-    console.log("savedUser", savedUser);
-
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
+
 exports.login = async (req, res) => {
+  console.log("asfasfasf")
   const { email, password } = req.body;
 
   try {
