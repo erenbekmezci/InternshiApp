@@ -20,9 +20,10 @@ const SignUp = ({ navigation }) => {
   const [expoPushToken, setExpoPushToken] = useState("");
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then((token) => {
+      console.log("Expo push token:", token); // Token'ı loglayın
+      setExpoPushToken(token);
+    });
   }, []);
 
   const registerForPushNotificationsAsync = async () => {

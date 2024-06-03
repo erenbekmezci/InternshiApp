@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 module.exports.register = async (req, res) => {
+  console.log("asdasdas");
   const { email, username, password, phone, role, companyName, expoPushToken } =
     req.body;
   try {
@@ -39,7 +40,7 @@ module.exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  console.log("login - back")
+  console.log("log");
   const { email, password } = req.body;
 
   try {

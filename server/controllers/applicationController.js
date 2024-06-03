@@ -117,6 +117,7 @@ exports.updateApplicationStatus = async (req, res) => {
     await application.save();
 
     const user = await User.findById(application.userId);
+    console.log("User:", user);
     if (user && user.expoPushToken) {
       const title = "Application Status Updated";
       const body = `Your application has been ${status}.`;
@@ -125,6 +126,7 @@ exports.updateApplicationStatus = async (req, res) => {
 
     res.status(200).json(application);
   } catch (error) {
+    console.error("Error updating application status:", error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -1,6 +1,7 @@
-const axios = require("axios");
+//const fetch = require("node-fetch");
 
 const sendPushNotification = async (expoPushToken, title, body) => {
+  console.log("Sending notification...");
   const message = {
     to: expoPushToken,
     sound: "default",
@@ -9,13 +10,22 @@ const sendPushNotification = async (expoPushToken, title, body) => {
     data: { someData: "goes here" },
   };
 
-  await axios.post("https://exp.host/--/api/v2/push/send", message, {
-    headers: {
-      Accept: "application/json",
-      "Accept-encoding": "gzip, deflate",
-      "Content-Type": "application/json",
-    },
-  });
+  try {
+    const response = await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+
+    const data = await response.json();
+    console.log("Notification response:", data);
+  } catch (error) {
+    console.error("Error sending notification:", error);
+  }
 };
 
 module.exports = { sendPushNotification };
