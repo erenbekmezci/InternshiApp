@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "InternshipApp",
-    "slug": "InternshipApp",
+    "slug": "internshipapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,6 +26,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a4b45aeb-ccba-4529-8003-d5ffad8362ef"
+      }
+    },
+    "owner": "erenbekmezci"
   }
 }
