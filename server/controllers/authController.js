@@ -2,6 +2,25 @@ const { User, Company } = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+exports.updatePushToken = async (req, res) => {
+  console.log("updddd");
+  const { userId, expoPushToken } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.expoPushToken = expoPushToken;
+    await user.save();
+
+    res.status(200).json({ message: "Push token updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports.register = async (req, res) => {
   console.log("asdasdas");
   const { email, username, password, phone, role, companyName, expoPushToken } =

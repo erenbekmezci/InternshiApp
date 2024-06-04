@@ -80,26 +80,6 @@ exports.getApplicantProfile = async (req, res) => {
   }
 };
 
-// exports.updateApplicationStatus = async (req, res) => {
-//   const { applicationId } = req.params;
-//   const { status } = req.body;
-
-//   try {
-//     const application = await Application.findById(applicationId);
-
-//     if (!application) {
-//       return res.status(404).json({ message: "Application not found" });
-//     }
-
-//     application.status = status;
-//     await application.save();
-
-//     res.status(200).json(application);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 const { sendPushNotification } = require("../utils/notifications");
 
 exports.updateApplicationStatus = async (req, res) => {
@@ -117,10 +97,11 @@ exports.updateApplicationStatus = async (req, res) => {
     await application.save();
 
     const user = await User.findById(application.userId);
-    console.log("User:", user);
+
     if (user && user.expoPushToken) {
       const title = "Application Status Updated";
       const body = `Your application has been ${status}.`;
+
       await sendPushNotification(user.expoPushToken, title, body);
     }
 

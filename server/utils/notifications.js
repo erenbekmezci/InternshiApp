@@ -1,5 +1,3 @@
-//const fetch = require("node-fetch");
-
 const sendPushNotification = async (expoPushToken, title, body) => {
   console.log("Sending notification...");
   const message = {
@@ -23,6 +21,9 @@ const sendPushNotification = async (expoPushToken, title, body) => {
 
     const data = await response.json();
     console.log("Notification response:", data);
+    if (data.errors) {
+      console.error("Notification errors:", data.errors);
+    }
   } catch (error) {
     console.error("Error sending notification:", error);
   }

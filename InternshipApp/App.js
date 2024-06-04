@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import React, { useEffect, useRef, useContext } from "react";
+import { SafeAreaView, StyleSheet, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import LoginScreen from "./Screens/LoginScreen";
 import SignUp from "./Screens/SignUp";
 import ProfileScreen from "./Screens/ProfileScreen";
@@ -216,6 +218,73 @@ function NavigationScreens() {
 }
 
 export default function App() {
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+   
+    const registerForPushNotificationsAsync = async () => {
+      let token;
+      if (Device.isDevice) {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== "granted") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== "granted") {
+          alert("Failed to get push token for push notification!");
+          return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+       
+      } else {
+        alert("Must use physical device for Push Notifications");
+      }
+
+      if (Platform.OS === "android") {
+        Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: "#FF231F7C",
+        });
+      }
+
+      return token;
+    };
+
+    registerForPushNotificationsAsync();
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+      }),
+    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        
+      // Alert.alert("Notification", JSON.stringify(notification));
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+       
+        //Alert.alert("Notification Response", JSON.stringify(response));
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <SafeAreaView style={styles.safeArea}>
