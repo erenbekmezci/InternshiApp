@@ -31,7 +31,10 @@ exports.createPost = async (req, res) => {
 // Postları getirme
 exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate("likes", "username photo").populate("comments.user", "username photo").sort({ createdAt: -1 });
+    const posts = await Post.find()
+      .populate("likes", "username photo")
+      .populate("comments.user", "username photo")
+      .sort({ createdAt: -1 });
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error getting posts:", error);
@@ -51,7 +54,9 @@ exports.likePost = async (req, res) => {
       post.likes.push(req.user.id);
       await post.save();
 
-      const updatedPost = await Post.findById(post._id).populate("likes", "username photo").populate("comments.user", "username photo");
+      const updatedPost = await Post.findById(post._id)
+        .populate("likes", "username photo")
+        .populate("comments.user", "username photo");
 
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
@@ -70,7 +75,10 @@ exports.likePost = async (req, res) => {
 // Beğenenleri getirme
 exports.getLikes = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId).populate("likes", "username photo");
+    const post = await Post.findById(req.params.postId).populate(
+      "likes",
+      "username photo"
+    );
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -98,7 +106,9 @@ exports.addComment = async (req, res) => {
     post.comments.push(comment);
     await post.save();
 
-    const updatedPost = await Post.findById(post._id).populate("likes", "username photo").populate("comments.user", "username photo");
+    const updatedPost = await Post.findById(post._id)
+      .populate("likes", "username photo")
+      .populate("comments.user", "username photo");
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -116,7 +126,10 @@ exports.addComment = async (req, res) => {
 // Yorumları getirme
 exports.getComments = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId).populate("comments.user", "username photo");
+    const post = await Post.findById(req.params.postId).populate(
+      "comments.user",
+      "username photo"
+    );
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
