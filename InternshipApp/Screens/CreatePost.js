@@ -1,25 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import api from "../api"; // Backend API için axios veya benzeri bir kütüphane kullanın
+import api from "../api";
+import { AuthContext } from "../src/context/AuthContext"; // AuthContext'i içe aktarın
 
 const CreatePostScreen = ({ navigation }) => {
+  const { user } = useContext(AuthContext); // Kullanıcı bilgilerini almak için AuthContext'i kullanın
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
 
   const handleSubmit = async () => {
     const newPost = {
-      username: "currentUser", // Mevcut kullanıcının adı
+      username: user.username, // Mevcut kullanıcının adı
       title: postTitle,
       content: postContent,
     };
 
     try {
       await api.post("/posts", newPost);
-      navigation.navigate("Home"); // Paylaşımdan sonra anasayfaya dön
+      Alert.alert("Başarılı", "Gönderi başarıyla oluşturuldu", [
+        { text: "Tamam", onPress: () => navigation.goBack() },
+      ]);
     } catch (error) {
       console.error("Error creating post:", error);
       Alert.alert(
-        "Error",
+        "Hata",
         "Gönderi oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."
       );
     }

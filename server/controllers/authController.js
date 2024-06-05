@@ -76,7 +76,12 @@ exports.login = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET
     );
 
-    res.json({ token, userId: user._id, role: user.role });
+    res.json({
+      token,
+      userId: user._id,
+      role: user.role,
+      username: user.username,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

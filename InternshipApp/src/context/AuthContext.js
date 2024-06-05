@@ -61,10 +61,10 @@ export const AuthProvider = ({ children }) => {
     console.log("Login initiated");
     const response = await api.post("/auth/login", { email, password });
     if (response.status === 200) {
-      const { token, userId, role } = response.data;
-      console.log()
+      const { token, userId, role, username } = response.data;
+      console.log();
       await AsyncStorage.setItem("token", token);
-      setUser({ id: userId, role });
+      setUser({ id: userId, role, username });
 
       const expoPushToken = await registerForPushNotificationsAsync();
       console.log("Expo Push Token: ", expoPushToken); // Log the push token
