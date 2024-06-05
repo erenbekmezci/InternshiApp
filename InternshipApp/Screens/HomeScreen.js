@@ -126,13 +126,20 @@ const HomeScreen = ({ navigation }) => {
           <Button title="Gönder" onPress={() => handleAddComment(item._id)} />
         </View>
       )}
-      {item.comments &&
-        item.comments.map((comment) => (
-          <View key={comment._id} style={styles.comment}>
-            <Text style={styles.commentUsername}>{comment.username}</Text>
+      {item.comments.map((comment) => (
+        <View key={comment._id} style={styles.comment}>
+          <Image
+            source={{
+              uri: `http://10.0.0.34:3000/uploads/${comment.user.photo}`,
+            }}
+            style={styles.commentUserPhoto}
+          />
+          <View>
+            <Text style={styles.commentUsername}>{comment.user.username}</Text>
             <Text style={styles.commentText}>{comment.text}</Text>
           </View>
-        ))}
+        </View>
+      ))}
     </View>
   );
 
@@ -335,6 +342,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
+  },
+  commentUserPhoto: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
   },
   commentUsername: {
     fontWeight: "bold",

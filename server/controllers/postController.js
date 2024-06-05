@@ -2,6 +2,7 @@ const Post = require("../models/posts");
 const User = require("../models/user");
 const { wss, WebSocket } = require("../utils/websocket");
 
+// Post oluşturma
 exports.createPost = async (req, res) => {
   const { username, title, content } = req.body;
 
@@ -26,10 +27,11 @@ exports.createPost = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // Postları getirme
 exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
+    const posts = await Post.find().populate("likes", "username photo").populate("comments.user", "username photo").sort({ createdAt: -1 });
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error getting posts:", error);
@@ -49,9 +51,11 @@ exports.likePost = async (req, res) => {
       post.likes.push(req.user.id);
       await post.save();
 
+      const updatedPost = await Post.findById(post._id).populate("likes", "username photo").populate("comments.user", "username photo");
+
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(post));
+          client.send(JSON.stringify(updatedPost));
         }
       });
     }
@@ -66,10 +70,7 @@ exports.likePost = async (req, res) => {
 // Beğenenleri getirme
 exports.getLikes = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId).populate(
-      "likes",
-      "username photo"
-    );
+    const post = await Post.findById(req.params.postId).populate("likes", "username photo");
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -90,16 +91,18 @@ exports.addComment = async (req, res) => {
     }
 
     const comment = {
-      username: req.user.username,
+      user: req.user.id,
       text: req.body.comment,
     };
 
     post.comments.push(comment);
     await post.save();
 
+    const updatedPost = await Post.findById(post._id).populate("likes", "username photo").populate("comments.user", "username photo");
+
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(post));
+        client.send(JSON.stringify(updatedPost));
       }
     });
 
@@ -113,7 +116,7 @@ exports.addComment = async (req, res) => {
 // Yorumları getirme
 exports.getComments = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId);
+    const post = await Post.findById(req.params.postId).populate("comments.user", "username photo");
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
