@@ -2,6 +2,19 @@ const Post = require("../models/posts");
 const User = require("../models/user");
 const { wss, WebSocket } = require("../utils/websocket");
 
+exports.getUserPosts = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const posts = await Post.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .populate("likes", "username photo");
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Error fetching user posts:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // Post oluşturma
 exports.createPost = async (req, res) => {
   const { username, title, content } = req.body;

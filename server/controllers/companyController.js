@@ -17,13 +17,26 @@ module.exports.getCompany = async (req, res) => {
 
 module.exports.updateCompany = async (req, res) => {
   try {
-    const company = await Company.findByIdAndUpdate(req.user.id, req.body, {
-      new: true,
-    });
-
+    const company = await Company.findById(req.user.id);
     if (!company) {
       return res.status(404).json({ error: "Company not found" });
     }
+
+    const { username, email, phone, companyDetails, location, companyName } =
+      req.body;
+    company.username = username || company.username;
+    company.email = email || company.email;
+    company.phone = phone || company.phone;
+    company.companyDetails = companyDetails || company.companyDetails;
+    company.location = location || company.location;
+    company.companyName = companyName || company.companyName;
+
+    // Handle photo upload
+    if (req.file) {
+      company.photo = req.file.filename;
+    }
+
+    await company.save();
     res.status(200).json(company);
   } catch (error) {
     res
