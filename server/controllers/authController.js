@@ -3,20 +3,18 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 exports.updatePushToken = async (req, res) => {
-  console.log("updddd");
-  const { userId, expoPushToken } = req.body;
+  const expoPushToken = req.body.expoPushToken;
+  console.log("Updating push token for user: ", req.user.id); // Log userId
+  console.log("New Expo Push Token: ", expoPushToken); // Log the new push token
 
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
+    const user = await User.findById(req.user.id);
     user.expoPushToken = expoPushToken;
     await user.save();
 
     res.status(200).json({ message: "Push token updated successfully" });
   } catch (error) {
+    console.error("Error updating push token:", error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useContext } from "react";
-import { SafeAreaView, StyleSheet, Alert } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -10,7 +10,8 @@ import SignUp from "./Screens/SignUp";
 import ProfileScreen from "./Screens/ProfileScreen";
 import HomeScreen from "./Screens/HomeScreen";
 import AdvertsScreen from "./Screens/AdvertsScreen";
-import CreatePost from "./Screens/CreatePost";
+import CreatePostScreen from "./Screens/CreatePost";
+import CommentsScreen from "./Screens/CommentsScreen";
 import ApplicationScreen from "./Screens/ApplicationScreen";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AdvertDetailsScreen from "./Screens/AdvertDetailsScreen";
@@ -93,7 +94,8 @@ function HomeStackScreens() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="Main" component={HomeScreen} />
-      <HomeStack.Screen name="Post" component={CreatePost} />
+      <HomeStack.Screen name="CreatePost" component={CreatePostScreen} />
+      <HomeStack.Screen name="Comments" component={CommentsScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -213,6 +215,12 @@ function NavigationScreens() {
       ) : (
         <Stack.Screen name="Stack" component={StackScreens} />
       )}
+      <Stack.Screen name="CreatePost" component={CreatePostScreen} />
+      <Stack.Screen name="Comments" component={CommentsScreen} />
+      <Stack.Screen
+        name="ApplicationDetailsScreen"
+        component={ApplicationDetailsScreen}
+      />
     </Stack.Navigator>
   );
 }
@@ -220,25 +228,28 @@ function NavigationScreens() {
 export default function App() {
   const notificationListener = useRef();
   const responseListener = useRef();
+  const navigationRef = useRef();
 
   useEffect(() => {
-   
+    // Bildirim izinlerini kontrol et ve al
     const registerForPushNotificationsAsync = async () => {
       let token;
       if (Device.isDevice) {
         const { status: existingStatus } =
           await Notifications.getPermissionsAsync();
+        console.log("Existing Status: ", existingStatus); // Log existing status
         let finalStatus = existingStatus;
         if (existingStatus !== "granted") {
           const { status } = await Notifications.requestPermissionsAsync();
           finalStatus = status;
+          console.log("Requested Status: ", finalStatus); // Log requested status
         }
         if (finalStatus !== "granted") {
           alert("Failed to get push token for push notification!");
           return;
         }
         token = (await Notifications.getExpoPushTokenAsync()).data;
-       
+        console.log("Push token:", token); // Log push token
       } else {
         alert("Must use physical device for Push Notifications");
       }
@@ -267,14 +278,19 @@ export default function App() {
 
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
-        
-      // Alert.alert("Notification", JSON.stringify(notification));
+        console.log("Notification received while app is open:", notification);
+        // Bildirim verisini işleyebilirsiniz
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-       
-        //Alert.alert("Notification Response", JSON.stringify(response));
+        console.log("Notification response received:", response);
+        const { notification } = response;
+        const { data } = notification.request.content;
+
+        if (data && data.targetScreen) {
+          navigationRef.current?.navigate(data.targetScreen, data);
+        }
       });
 
     return () => {
@@ -288,7 +304,7 @@ export default function App() {
   return (
     <AuthProvider>
       <SafeAreaView style={styles.safeArea}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <NavigationScreens />
         </NavigationContainer>
       </SafeAreaView>
@@ -299,6 +315,6 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#fff", // This can be adjusted to match your app's design
+    backgroundColor: "#fff",
   },
 });

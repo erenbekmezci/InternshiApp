@@ -28,9 +28,9 @@ export const AuthProvider = ({ children }) => {
     checkToken();
   }, []);
 
-  const updatePushToken = async (userId, expoPushToken) => {
+  const updatePushToken = async (expoPushToken) => {
     try {
-      await api.put("/auth/update-push-token", { userId, expoPushToken });
+      await api.put("/auth/update-push-token", { expoPushToken });
     } catch (error) {
       console.error("Error updating push token:", error);
     }
@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     const response = await api.post("/auth/login", { email, password });
     if (response.status === 200) {
       const { token, userId, role } = response.data;
+      console.log()
       await AsyncStorage.setItem("token", token);
       setUser({ id: userId, role });
 
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
       if (expoPushToken) {
         console.log("Token exists and is not null or undefined");
-        await updatePushToken(userId, expoPushToken);
+        await updatePushToken(expoPushToken);
       } else {
         console.error("Failed to retrieve Expo Push Token");
       }
@@ -82,7 +83,9 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     const token = await AsyncStorage.getItem("token");
     if (token) {
-      await updatePushToken(user.id, ""); // Push token'ı temizle
+      console.log("User during logout:", user);
+
+      await updatePushToken("");
     }
     await AsyncStorage.removeItem("token");
     setUser(null);

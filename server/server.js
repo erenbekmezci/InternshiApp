@@ -11,6 +11,7 @@ const authMiddleware = require("./middleware.js");
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Server
@@ -18,6 +19,5 @@ const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
-
 
 require("./routes/routesManager.js")(app);

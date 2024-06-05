@@ -1,11 +1,11 @@
-const sendPushNotification = async (expoPushToken, title, body) => {
+const sendPushNotification = async (expoPushToken, title, body,data) => {
   console.log("Sending notification...");
   const message = {
     to: expoPushToken,
     sound: "default",
     title: title,
     body: body,
-    data: { someData: "goes here" },
+    data: data,
   };
 
   try {

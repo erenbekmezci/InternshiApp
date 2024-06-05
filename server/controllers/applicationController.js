@@ -101,8 +101,12 @@ exports.updateApplicationStatus = async (req, res) => {
     if (user && user.expoPushToken) {
       const title = "Application Status Updated";
       const body = `Your application has been ${status}.`;
-
-      await sendPushNotification(user.expoPushToken, title, body);
+      const data = {
+        targetScreen: 'ApplicationDetailsScreen',
+        applicationId: application._id,
+      };
+      await sendPushNotification(user.expoPushToken, title, body, data);
+      
     }
 
     res.status(200).json(application);

@@ -1,4 +1,6 @@
-const {User} = require("../models/user");
+const { User } = require("../models/user");
+const fs = require("fs");
+const path = require("path");
 
 module.exports.getUser = async (req, res) => {
   try {
@@ -16,15 +18,25 @@ module.exports.getUser = async (req, res) => {
 };
 
 module.exports.updateUser = async (req, res) => {
-  console.log("sasd");
-
   try {
-    console.log("sasd")
-
-    const user = await User.findByIdAndUpdate(req.user.id, req.body, {
+    const updateData = req.body;
+    if (req.file) {
+      const user = await User.findById(req.user.id);
+      if (user.photo && user.photo !== "default_profile.jpg") {
+        fs.unlinkSync(path.join(__dirname, "..", "uploads", user.photo));
+      }
+      updateData.photo = req.file.filename;
+    }
+    if (req.body.photo === "default_profile.jpg") {
+      const user = await User.findById(req.user.id);
+      if (user.photo && user.photo !== "default_profile.jpg") {
+        fs.unlinkSync(path.join(__dirname, "..", "uploads", user.photo));
+      }
+      updateData.photo = "default_profile.jpg";
+    }
+    const user = await User.findByIdAndUpdate(req.user.id, updateData, {
       new: true,
     });
-    console.log("sasd");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
