@@ -95,8 +95,8 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.header}>
         <Image
           source={{
-            uri: `http://10.0.0.34:3000/uploads/${
-              item.user?.photo || "default_profile.jpg"
+            uri: `http://10.0.0.35:3000/uploads/${
+              item.userId?.photo || "default_profile.jpg"
             }`,
           }}
           style={styles.userPhoto}
@@ -145,7 +145,7 @@ const HomeScreen = ({ navigation }) => {
           <View key={comment._id} style={styles.comment}>
             <Image
               source={{
-                uri: `http://10.0.0.34:3000/uploads/${
+                uri: `http://10.0.0.35:3000/uploads/${
                   comment.user?.photo || "default_profile.jpg"
                 }`,
               }}
@@ -206,7 +206,7 @@ const HomeScreen = ({ navigation }) => {
                 <View key={user._id} style={styles.likedUserContainer}>
                   <Image
                     source={{
-                      uri: `http://10.0.0.34:3000/uploads/${user.photo}`,
+                      uri: `http://10.0.0.35:3000/uploads/${user.photo}`,
                     }}
                     style={styles.likedUserPhoto}
                   />

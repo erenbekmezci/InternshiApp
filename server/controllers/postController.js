@@ -50,6 +50,7 @@ exports.createPost = async (req, res) => {
 exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
+      .populate("userId", "username photo") // Ensure user field is populated with username and photo
       .populate("likes", "username photo")
       .populate("comments.user", "username photo")
       .sort({ createdAt: -1 });

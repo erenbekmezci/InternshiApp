@@ -59,10 +59,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     console.log("Login initiated");
+
     const response = await api.post("/auth/login", { email, password });
+    console.log("1");
+
     if (response.status === 200) {
+      console.log("2");
+
       const { token, userId, role, username } = response.data;
-      console.log();
+
       await AsyncStorage.setItem("token", token);
       setUser({ id: userId, role, username });
 
