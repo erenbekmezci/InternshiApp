@@ -8,35 +8,28 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Button,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import api from "../api"; // axios istemcisini burada kullanıyoruz
+import api from "../api"; // Axios istemcisini burada kullanıyoruz
 import { AuthContext } from "../src/context/AuthContext";
 
-const defaultProfilePic = "http://10.0.0.34:3000/uploads/default_profile.jpg"; // Varsayılan profil resmi URL'si
-
-const CProfileScreen = ({ navigation }) => {
+const CProfileScreen = () => {
   const { user, logout } = useContext(AuthContext);
   const [companyInfo, setCompanyInfo] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCompany = async () => {
       try {
         const response = await api.get(`/company/profile`);
         setCompanyInfo(response.data);
-        if (
-          response.data.photo &&
-          response.data.photo !== "default_profile.jpg"
-        ) {
-          setImage(`http://10.0.0.34:3000/uploads/${response.data.photo}`);
-        } else {
-          setImage(defaultProfilePic);
-        }
+        setLoading(false);
       } catch (error) {
         console.error(error);
+        setLoading(false);
       }
     };
 
@@ -45,51 +38,24 @@ const CProfileScreen = ({ navigation }) => {
 
   const handleUpdate = async () => {
     try {
-      const formData = new FormData();
-      for (const key in companyInfo) {
-        formData.append(key, companyInfo[key]);
-      }
-      if (image && image !== defaultProfilePic) {
-        const uriParts = image.split(".");
-        const fileType = uriParts[uriParts.length - 1];
-        formData.append("photo", {
-          uri: image,
-          name: `photo.${fileType}`,
-          type: `image/${fileType}`,
-        });
-      } else {
-        formData.append("photo", "default_profile.jpg"); // Varsayılan profil resmi dosya adı
-      }
-      const response = await api.put(`/company/profile`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await api.put(`/company/profile`, companyInfo);
       setCompanyInfo(response.data);
       setIsEditing(false);
       Alert.alert("Success", "Profile updated successfully");
     } catch (error) {
-      console.error(error);
       Alert.alert("Error", "An error occurred while updating profile");
     }
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const removeImage = () => {
-    setImage(defaultProfilePic);
-  };
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#1C1678" />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -97,49 +63,14 @@ const CProfileScreen = ({ navigation }) => {
         <View style={styles.profilePicContainer}>
           <Image
             source={{
-              uri: image,
+              uri: `data:image/jpeg;base64,${companyInfo.photo}`,
             }}
             style={styles.profilePic}
           />
-          {isEditing && (
-            <View style={styles.photoButtons}>
-              <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
-                <Text style={styles.photoButtonText}>Change Photo</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.photoButton}
-                onPress={removeImage}
-              >
-                <Text style={styles.photoButtonText}>Remove Photo</Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
         <View style={styles.infoContainer}>
-          <View style={styles.actionButtons}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => setIsEditing(true)}
-            >
-              <Text style={styles.actionButtonText}>Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => navigation.navigate("Posts")}
-            >
-              <Text style={styles.actionButtonText}>Gönderilerim</Text>
-            </TouchableOpacity>
-          </View>
           {isEditing ? (
             <>
-              <TextInput
-                style={styles.input}
-                placeholder="Company Name"
-                value={companyInfo.companyName}
-                onChangeText={(text) =>
-                  setCompanyInfo({ ...companyInfo, companyName: text })
-                }
-              />
               <TextInput
                 style={styles.input}
                 placeholder="Username"
@@ -180,20 +111,8 @@ const CProfileScreen = ({ navigation }) => {
                   setCompanyInfo({ ...companyInfo, location: text })
                 }
               />
-              <View style={styles.saveCancelButtons}>
-                <TouchableOpacity
-                  style={styles.saveButton}
-                  onPress={handleUpdate}
-                >
-                  <Text style={styles.saveButtonText}>Save</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => setIsEditing(false)}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
+              <Button title="Save" onPress={handleUpdate} />
+              <Button title="Cancel" onPress={() => setIsEditing(false)} />
             </>
           ) : (
             <>
@@ -216,11 +135,17 @@ const CProfileScreen = ({ navigation }) => {
                   {companyInfo.location}
                 </Text>
               </View>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => setIsEditing(true)}
+              >
+                <Text style={styles.editButtonText}>Edit Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+                <Text style={styles.logoutButtonText}>Logout</Text>
+              </TouchableOpacity>
             </>
           )}
-          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -236,6 +161,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F6F5F2",
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   profilePicContainer: {
     alignItems: "center",
     marginVertical: 20,
@@ -245,42 +175,10 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75,
-  },
-  photoButtons: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  photoButton: {
-    backgroundColor: "#1C1678",
-    padding: 10,
-    borderRadius: 8,
-    marginHorizontal: 5,
-  },
-  photoButtonText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
+    backgroundColor: "#ccc", // Placeholder background color
   },
   infoContainer: {
     paddingHorizontal: 20,
-  },
-  actionButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  actionButton: {
-    backgroundColor: "#1C1678",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  actionButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
   name: {
     fontSize: 24,
@@ -306,8 +204,8 @@ const styles = StyleSheet.create({
   detailsTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#F6F5F2",
-    backgroundColor: "#1C1678",
+    color: "#1C1678",
+    backgroundColor: "#F6F5F2",
     padding: 10,
     borderRadius: 8,
   },
@@ -318,7 +216,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     padding: 15,
     borderRadius: 12,
-    backgroundColor: "#F6F5F2",
+    backgroundColor: "#fff",
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -335,35 +233,17 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 1,
   },
-  saveCancelButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  saveButton: {
+  editButton: {
     backgroundColor: "#1C1678",
     padding: 15,
     borderRadius: 8,
-    flex: 1,
-    marginRight: 10,
+    alignItems: "center",
+    marginTop: 20,
   },
-  saveButtonText: {
+  editButtonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-    textAlign: "center",
-  },
-  cancelButton: {
-    backgroundColor: "#E74C3C",
-    padding: 15,
-    borderRadius: 8,
-    flex: 1,
-  },
-  cancelButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
   },
   logoutButton: {
     backgroundColor: "#E74C3C",
