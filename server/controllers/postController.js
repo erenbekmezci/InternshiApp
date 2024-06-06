@@ -5,9 +5,11 @@ const { wss, WebSocket } = require("../utils/websocket");
 exports.getUserPosts = async (req, res) => {
   try {
     const userId = req.user.id;
-    const posts = await Post.find({ user: userId })
+    const posts = await Post.find({ userId }) // user yerine userId kullanın
       .sort({ createdAt: -1 })
       .populate("likes", "username photo");
+
+    console.log(posts);
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error fetching user posts:", error);
@@ -18,8 +20,10 @@ exports.getUserPosts = async (req, res) => {
 // Post oluşturma
 exports.createPost = async (req, res) => {
   const { username, title, content } = req.body;
+  const userId = req.user.id; // Oturum açmış kullanıcının ID'si
 
   const newPost = new Post({
+    userId, // userId alanını ekle
     username,
     title,
     content,
@@ -106,6 +110,7 @@ exports.getLikes = async (req, res) => {
 // Yorum ekleme
 exports.addComment = async (req, res) => {
   try {
+    console.log("asdas");
     const post = await Post.findById(req.params.postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
@@ -115,9 +120,11 @@ exports.addComment = async (req, res) => {
       user: req.user.id,
       text: req.body.comment,
     };
+    console.log("asdas");
 
     post.comments.push(comment);
     await post.save();
+    console.log("3");
 
     const updatedPost = await Post.findById(post._id)
       .populate("likes", "username photo")

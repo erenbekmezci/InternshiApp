@@ -39,6 +39,7 @@ const HomeScreen = ({ navigation }) => {
 
     ws.current.onmessage = (event) => {
       const updatedPost = JSON.parse(event.data);
+      console.log("Received WebSocket message: ", updatedPost); // Log the received message
       setPosts((prevPosts) => {
         const existingPostIndex = prevPosts.findIndex(
           (post) => post._id === updatedPost._id
