@@ -1,3 +1,5 @@
+// ProfileScreen.js
+
 import React, { useContext, useState, useEffect } from "react";
 import {
   SafeAreaView,
@@ -11,10 +13,10 @@ import {
   Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import api from "../api"; // axios istemcisini burada kullanıyoruz
+import api from "../api";
 import { AuthContext } from "../src/context/AuthContext";
 
-const defaultProfilePic = "http://10.0.0.34:3000/uploads/default_profile.jpg"; // Varsayılan profil resmi URL'si
+const defaultProfilePic = "http://10.0.0.34:3000/uploads/default_profile.jpg";
 
 const ProfileScreen = ({ navigation }) => {
   const { user, logout } = useContext(AuthContext);
@@ -58,7 +60,7 @@ const ProfileScreen = ({ navigation }) => {
           type: `image/${fileType}`,
         });
       } else {
-        formData.append("photo", "default_profile.jpg"); // Varsayılan profil resmi dosya adı
+        formData.append("photo", "default_profile.jpg");
       }
       const response = await api.put(`/users`, formData, {
         headers: {
@@ -125,7 +127,7 @@ const ProfileScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => navigation.navigate("Posts")}
+              onPress={() => navigation.navigate("MyPosts")}
             >
               <Text style={styles.actionButtonText}>Gönderilerim</Text>
             </TouchableOpacity>

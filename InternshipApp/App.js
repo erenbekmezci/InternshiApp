@@ -25,6 +25,7 @@ import CreateAdvertScreen from "./Screens/CreateAdvertScreen";
 import EditAdvertScreen from "./Screens/EditAdvertScreen";
 import ApplicantProfileScreen from "./Screens/ApplicantProfileScreen";
 import ApplicationDetailsScreen from "./Screens/ApplicationDetailsScreen";
+import MyPostsScreen from "./Screens/MyPostsScreen"; // Import the new screen
 import { AuthProvider, AuthContext } from "./src/context/AuthContext";
 
 const Stack = createNativeStackNavigator();
@@ -217,6 +218,7 @@ function NavigationScreens() {
       )}
       <Stack.Screen name="CreatePost" component={CreatePostScreen} />
       <Stack.Screen name="Comments" component={CommentsScreen} />
+      <Stack.Screen name="MyPosts" component={MyPostsScreen} />
       <Stack.Screen
         name="ApplicationDetailsScreen"
         component={ApplicationDetailsScreen}

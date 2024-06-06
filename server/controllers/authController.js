@@ -35,7 +35,6 @@ module.exports.register = async (req, res) => {
         password: hashedPassword,
         phone,
         role,
-        companyName,
         expoPushToken,
       });
     } else {

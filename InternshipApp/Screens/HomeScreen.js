@@ -10,12 +10,14 @@ import {
   Image,
   Button,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import api from "../api"; // Backend API için axios veya benzeri bir kütüphane kullanın
 
 const HomeScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const [newPostAlert, setNewPostAlert] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [likedBy, setLikedBy] = useState([]);
@@ -25,10 +27,13 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchPosts = async () => {
     try {
+      setRefreshing(true);
       const response = await api.get("/posts");
       setPosts(response.data);
+      setRefreshing(false);
     } catch (error) {
       console.error(error);
+      setRefreshing(false);
     }
   };
 
@@ -127,20 +132,25 @@ const HomeScreen = ({ navigation }) => {
           <Button title="Gönder" onPress={() => handleAddComment(item._id)} />
         </View>
       )}
-      {item.comments.map((comment) => (
-        <View key={comment._id} style={styles.comment}>
-          <Image
-            source={{
-              uri: `http://10.0.0.34:3000/uploads/${comment.user.photo}`,
-            }}
-            style={styles.commentUserPhoto}
-          />
-          <View>
-            <Text style={styles.commentUsername}>{comment.user.username}</Text>
-            <Text style={styles.commentText}>{comment.text}</Text>
+      {item.comments &&
+        item.comments.map((comment) => (
+          <View key={comment._id} style={styles.comment}>
+            <Image
+              source={{
+                uri: `http://10.0.0.34:3000/uploads/${
+                  comment.user?.photo || "default_profile.jpg"
+                }`,
+              }}
+              style={styles.commentUserPhoto}
+            />
+            <View>
+              <Text style={styles.commentUsername}>
+                {comment.user?.username || "Bilinmeyen Kullanıcı"}
+              </Text>
+              <Text style={styles.commentText}>{comment.text}</Text>
+            </View>
           </View>
-        </View>
-      ))}
+        ))}
     </View>
   );
 
@@ -156,6 +166,9 @@ const HomeScreen = ({ navigation }) => {
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.list}
         onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={fetchPosts} />
+        }
       />
       <TouchableOpacity
         style={styles.fab}
