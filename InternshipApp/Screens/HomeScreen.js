@@ -126,25 +126,20 @@ const HomeScreen = ({ navigation }) => {
           <Button title="Gönder" onPress={() => handleAddComment(item._id)} />
         </View>
       )}
-      {item.comments &&
-        item.comments.map((comment) => (
-          <View key={comment._id} style={styles.comment}>
-            <Image
-              source={{
-                uri: `http://10.0.0.34:3000/uploads/${
-                  comment.user?.photo || "default_profile.jpg"
-                }`,
-              }}
-              style={styles.commentUserPhoto}
-            />
-            <View>
-              <Text style={styles.commentUsername}>
-                {comment.user?.username || "Bilinmeyen Kullanıcı"}
-              </Text>
-              <Text style={styles.commentText}>{comment.text}</Text>
-            </View>
+      {item.comments.map((comment) => (
+        <View key={comment._id} style={styles.comment}>
+          <Image
+            source={{
+              uri: `http://10.0.0.34:3000/uploads/${comment.user.photo}`,
+            }}
+            style={styles.commentUserPhoto}
+          />
+          <View>
+            <Text style={styles.commentUsername}>{comment.user.username}</Text>
+            <Text style={styles.commentText}>{comment.text}</Text>
           </View>
-        ))}
+        </View>
+      ))}
     </View>
   );
 
