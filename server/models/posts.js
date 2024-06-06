@@ -2,7 +2,6 @@ const mongoose = require("../db/db");
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Add userId reference
   username: String,
   title: String,
   content: String,
