@@ -93,6 +93,14 @@ const HomeScreen = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <View style={styles.postContainer}>
       <View style={styles.header}>
+        <Image
+          source={{
+            uri: `http://10.0.0.34:3000/uploads/${
+              item.user?.photo || "default_profile.jpg"
+            }`,
+          }}
+          style={styles.userPhoto}
+        />
         <Text style={styles.username}>{item.username}</Text>
       </View>
       <Text style={styles.title}>{item.title}</Text>
@@ -238,6 +246,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+  },
+  userPhoto: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
   },
   username: {
     fontWeight: "bold",
