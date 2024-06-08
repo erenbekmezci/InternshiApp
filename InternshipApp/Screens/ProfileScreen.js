@@ -15,8 +15,9 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import api from "../api";
 import { AuthContext } from "../src/context/AuthContext";
+import {URL} from '@env';
 
-const defaultProfilePic = "http://10.0.0.35:3000/uploads/default_profile.jpg";
+const defaultProfilePic = `http://${URL}:3000/uploads/default_profile.jpg`;
 
 const ProfileScreen = ({ navigation }) => {
   const { user, logout } = useContext(AuthContext);
@@ -33,7 +34,7 @@ const ProfileScreen = ({ navigation }) => {
           response.data.photo &&
           response.data.photo !== "default_profile.jpg"
         ) {
-          setImage(`http://10.0.0.35:3000/uploads/${response.data.photo}`);
+          setImage(`http://${URL}:3000/uploads/${response.data.photo}`);
         } else {
           setImage(defaultProfilePic);
         }

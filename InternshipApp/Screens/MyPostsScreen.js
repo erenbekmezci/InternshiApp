@@ -14,6 +14,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { AuthContext } from "../src/context/AuthContext";
 import api from "../api"; // Backend API için axios veya benzeri bir kütüphane kullanın
+import {URL} from '@env';
 
 const MyPostsScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -37,7 +38,7 @@ const MyPostsScreen = ({ navigation }) => {
   useEffect(() => {
     fetchMyPosts();
 
-    ws.current = new WebSocket("ws://10.0.0.34:8080"); // WebSocket sunucusunun adresi
+    ws.current = new WebSocket(`ws://${URL}:8080`); // WebSocket sunucusunun adresi
 
     ws.current.onmessage = (event) => {
       const updatedPost = JSON.parse(event.data);
@@ -133,7 +134,7 @@ const MyPostsScreen = ({ navigation }) => {
           <View key={comment._id} style={styles.comment}>
             <Image
               source={{
-                uri: `http://10.0.0.35:3000/uploads/${
+                uri: `http://${URL}:3000/uploads/${
                   comment.user?.photo || "default_profile.jpg"
                 }`,
               }}
@@ -185,7 +186,7 @@ const MyPostsScreen = ({ navigation }) => {
                 <View key={user._id} style={styles.likedUserContainer}>
                   <Image
                     source={{
-                      uri: `http://10.0.0.35:3000/uploads/${user.photo}`,
+                      uri: `http://${URL}:3000/uploads/${user.photo}`,
                     }}
                     style={styles.likedUserPhoto}
                   />

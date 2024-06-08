@@ -18,7 +18,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       await login(email, password);
     } catch (error) {
-      Alert.alert("Error", "Invalid email or password");
+      Alert.alert("Error", "Hatalı kullanıcı adı veya şifre");
     }
   };
 
@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
         autoCapitalize="none"
       />
       <TextInput
-        placeholder="Password"
+        placeholder="Şifre"
         style={styles.input}
         placeholderTextColor="#1C1678"
         secureTextEntry
@@ -48,7 +48,7 @@ const LoginScreen = ({ navigation }) => {
         style={styles.button}
         onPress={() => navigation.navigate("SignUp")}
       >
-        <Text style={styles.buttonText}>Sign Up</Text>
+        <Text style={styles.buttonText}>Hesap Oluştur</Text>
       </TouchableOpacity>
     </View>
   );
