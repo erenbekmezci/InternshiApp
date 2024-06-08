@@ -35,9 +35,10 @@ exports.createPost = async (req, res) => {
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(newPost));
+        client.send(JSON.stringify({ type: 'new_post', post: newPost }));
       }
     });
+
 
     res.status(201).json(newPost);
   } catch (error) {

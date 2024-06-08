@@ -44,21 +44,27 @@ const HomeScreen = ({ navigation }) => {
     ws.current = new WebSocket(`ws://${URL}:8080`); // WebSocket sunucusunun adresi
 
     ws.current.onmessage = (event) => {
-      const updatedPost = JSON.parse(event.data);
-      console.log("Received WebSocket message: ", updatedPost); // Log the received message
-      setPosts((prevPosts) => {
-        const existingPostIndex = prevPosts.findIndex(
-          (post) => post._id === updatedPost._id
-        );
-        if (existingPostIndex !== -1) {
-          const updatedPosts = [...prevPosts];
-          updatedPosts[existingPostIndex] = updatedPost;
-          return updatedPosts;
-        } else {
-          return [updatedPost, ...prevPosts];
-        }
-      });
-      setNewPostAlert(true);
+      const message = JSON.parse(event.data);
+      console.log("Received WebSocket message: ", message); // Log the received message
+
+      if (message.type === 'new_post') {
+        setPosts((prevPosts) => [message.post, ...prevPosts]);
+        setNewPostAlert(true);
+      } else {
+        const updatedPost = message;
+        setPosts((prevPosts) => {
+          const existingPostIndex = prevPosts.findIndex(
+            (post) => post._id === updatedPost._id
+          );
+          if (existingPostIndex !== -1) {
+            const updatedPosts = [...prevPosts];
+            updatedPosts[existingPostIndex] = updatedPost;
+            return updatedPosts;
+          } else {
+            return [updatedPost, ...prevPosts];
+          }
+        });
+      }
     };
 
     return () => {
