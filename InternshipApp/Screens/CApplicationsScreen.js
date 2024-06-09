@@ -84,16 +84,16 @@ const CApplicationsScreen = ({ route }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}></View>
       <View style={styles.filterContainer}>
-        <Text style={styles.filterLabel}>Filter by Status:</Text>
+        <Text style={styles.filterLabel}>Duruma göre filtrele:</Text>
         <Picker
           selectedValue={filterStatus}
           style={styles.picker}
           onValueChange={(itemValue) => setFilterStatus(itemValue)}
         >
-          <Picker.Item label="All" value="all" />
-          <Picker.Item label="Pending" value="pending" />
-          <Picker.Item label="Accepted" value="accepted" />
-          <Picker.Item label="Rejected" value="rejected" />
+          <Picker.Item label="Tümü" value="all" />
+          <Picker.Item label="Bekleyen" value="pending" />
+          <Picker.Item label="Kabul Edilenler" value="accepted" />
+          <Picker.Item label="Reddedilenler" value="rejected" />
         </Picker>
       </View>
       {loading ? (
