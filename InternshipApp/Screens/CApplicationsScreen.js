@@ -13,6 +13,7 @@ import {
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import api from "../api";
+import { URL } from "@env";
 
 const CApplicationsScreen = ({ route }) => {
   const { advertId } = route.params;
@@ -56,7 +57,11 @@ const CApplicationsScreen = ({ route }) => {
         }
       >
         <Image
-          source={{ uri: `data:image/jpeg;base64,${applicant.photo}` }}
+          source={{
+            uri: applicant.photo
+              ? `http://${URL}:3000/uploads/${applicant.photo}`
+              : `http://${URL}:3000/uploads/default_profile.jpg`,
+          }}
           style={styles.profilePic}
         />
         <View style={styles.infoContainer}>
@@ -77,8 +82,7 @@ const CApplicationsScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-      </View>
+      <View style={styles.header}></View>
       <View style={styles.filterContainer}>
         <Text style={styles.filterLabel}>Filter by Status:</Text>
         <Picker

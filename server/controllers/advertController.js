@@ -100,7 +100,7 @@ exports.getAllAdverts = async (req, res) => {
   try {
     const adverts = await Advert.find().populate(
       "companyId",
-      "username profilePicture"
+      "username photo"
     );
     res.status(200).json(adverts);
   } catch (error) {

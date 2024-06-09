@@ -55,7 +55,6 @@ module.exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  console.log("log");
   const { email, password } = req.body;
 
   try {
