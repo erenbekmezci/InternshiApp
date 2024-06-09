@@ -78,7 +78,6 @@ const CApplicationsScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Applications</Text>
       </View>
       <View style={styles.filterContainer}>
         <Text style={styles.filterLabel}>Filter by Status:</Text>

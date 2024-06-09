@@ -9,25 +9,28 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import api from "../api";
 
 const CreateAdvertScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [context, setContext] = useState("");
   const [skills, setSkills] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [location, setLocation] = useState("");
   const [acceptText, setAcceptText] = useState("");
   const [rejectText, setRejectText] = useState("");
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   const handleCreateAdvert = async () => {
     const newAdvert = {
       title,
       context,
       skills,
-      startDate,
-      endDate,
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0],
       location,
       acceptText,
       rejectText,
@@ -38,8 +41,20 @@ const CreateAdvertScreen = ({ navigation }) => {
       navigation.goBack();
     } catch (error) {
       console.error("Error creating advert:", error);
-      Alert.alert("Error", "Failed to create advert");
+      Alert.alert("Hata", "İlan oluşturulamadı");
     }
+  };
+
+  const onChangeStartDate = (event, selectedDate) => {
+    const currentDate = selectedDate || startDate;
+    setShowStartDatePicker(false);
+    setStartDate(currentDate);
+  };
+
+  const onChangeEndDate = (event, selectedDate) => {
+    const currentDate = selectedDate || endDate;
+    setShowEndDatePicker(false);
+    setEndDate(currentDate);
   };
 
   return (
@@ -79,22 +94,42 @@ const CreateAdvertScreen = ({ navigation }) => {
         />
 
         <Text style={styles.label}>Başlangıç Tarihi</Text>
-        <TextInput
-          style={styles.input}
-          value={startDate}
-          onChangeText={setStartDate}
-          placeholder="YYYY-MM-DD"
-          placeholderTextColor="#999"
-        />
+        <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
+          <TextInput
+            style={styles.input}
+            value={startDate.toISOString().split('T')[0]}
+            editable={false}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor="#999"
+          />
+        </TouchableOpacity>
+        {showStartDatePicker && (
+          <DateTimePicker
+            value={startDate}
+            mode="date"
+            display="default"
+            onChange={onChangeStartDate}
+          />
+        )}
 
         <Text style={styles.label}>Bitiş Tarihi</Text>
-        <TextInput
-          style={styles.input}
-          value={endDate}
-          onChangeText={setEndDate}
-          placeholder="YYYY-MM-DD"
-          placeholderTextColor="#999"
-        />
+        <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
+          <TextInput
+            style={styles.input}
+            value={endDate.toISOString().split('T')[0]}
+            editable={false}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor="#999"
+          />
+        </TouchableOpacity>
+        {showEndDatePicker && (
+          <DateTimePicker
+            value={endDate}
+            mode="date"
+            display="default"
+            onChange={onChangeEndDate}
+          />
+        )}
 
         <Text style={styles.label}>Konum</Text>
         <TextInput

@@ -53,27 +53,36 @@ function ApplicationsStackScreen() {
 
 function CAdvertStackScreen() {
   return (
-    <CAdvertsStack.Navigator screenOptions={{ headerShown: false }}>
-      <CAdvertsStack.Screen name="CAdvertsScreen" component={CAdvertsScreen} />
+    <CAdvertsStack.Navigator>
+      <CAdvertsStack.Screen 
+        name="CAdvertsScreen" 
+        component={CAdvertsScreen} 
+        options={{ headerShown:false }}
+      />
       <CAdvertsStack.Screen
         name="CAdvertDetailsScreen"
         component={CAdvertDetailsScreen}
+        options={{ title: "İlan Detayları" }}
       />
       <CAdvertsStack.Screen
         name="EditAdvertScreen"
         component={EditAdvertScreen}
+        options={{ title: "İlan Düzenle" }}
       />
       <CAdvertsStack.Screen
         name="CApplicationsScreen"
         component={CApplicationsScreen}
+        options={{ title: "Başvurular" }}
       />
       <CAdvertsStack.Screen
         name="CreateAdvertScreen"
         component={CreateAdvertScreen}
+        options={{ title: "İlan Oluştur" }}
       />
       <CAdvertsStack.Screen
         name="ApplicantProfileScreen"
         component={ApplicantProfileScreen}
+        options={{ title: "Başvuran Profili" }}
       />
     </CAdvertsStack.Navigator>
   );
@@ -82,7 +91,10 @@ function CAdvertStackScreen() {
 function AdvertStackScreens() {
   return (
     <AdvertStack.Navigator screenOptions={{ headerShown: false }}>
-      <AdvertStack.Screen name="Adverts" component={AdvertsScreen} />
+      <AdvertStack.Screen 
+        name="Adverts" 
+        component={AdvertsScreen} 
+      />
       <AdvertStack.Screen
         name="AdvertDetailsScreen"
         component={AdvertDetailsScreen}
@@ -93,21 +105,49 @@ function AdvertStackScreens() {
 
 function HomeStackScreens() {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="Main" component={HomeScreen} />
-      <HomeStack.Screen name="CreatePost" component={CreatePostScreen} />
-      <HomeStack.Screen name="Comments" component={CommentsScreen} />
+    <HomeStack.Navigator>
+      <HomeStack.Screen 
+        name="Main" 
+        component={HomeScreen} 
+        options={{ headerShown:false }}
+      />
+      <HomeStack.Screen 
+        name="CreatePost" 
+        component={CreatePostScreen} 
+        options={{ title: "Gönderi Oluştur" }}
+      />
+      <HomeStack.Screen 
+        name="Comments" 
+        component={CommentsScreen} 
+        options={{ title: "Yorumlar" }}
+      />
     </HomeStack.Navigator>
   );
 }
 
 function StackScreens() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="SignUp" component={ForkScreen} />
-      <Stack.Screen name="CSignUp" component={CSignUp} />
-      <Stack.Screen name="StudentSignUp" component={SignUp} />
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Login" 
+        component={LoginScreen} 
+        options={{ title: "Giriş Yap" }}
+      />
+      <Stack.Screen 
+        name="SignUp" 
+        component={ForkScreen} 
+        options={{ title: "Kayıt Ol" }}
+      />
+      <Stack.Screen 
+        name="CSignUp" 
+        component={CSignUp} 
+        options={{ title: "Şirket Kayıt Ol" }}
+      />
+      <Stack.Screen 
+        name="StudentSignUp" 
+        component={SignUp} 
+        options={{ title: "Öğrenci Kayıt Ol" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -116,6 +156,13 @@ function CTabScreen() {
   return (
     <CTab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: "#1C1678",
+        },
+        headerTitleStyle: {
+          color: "#FFFFFF",
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === "CProfile") {
@@ -134,17 +181,17 @@ function CTabScreen() {
       <CTab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ tabBarLabel: "Anasayfa" }}
+        options={{ tabBarLabel: "Anasayfa", title: "Anasayfa" }}
       />
       <CTab.Screen
         name="CProfile"
         component={CProfileScreen}
-        options={{ tabBarLabel: "Profil" }}
+        options={{ tabBarLabel: "Profil", title: "Profil" }}
       />
       <CTab.Screen
         name="CAdverts"
         component={CAdvertStackScreen}
-        options={{ tabBarLabel: "İlanlarım" }}
+        options={{ tabBarLabel: "İlanlarım", title: "İlanlarım" }}
       />
     </CTab.Navigator>
   );
@@ -181,22 +228,22 @@ function TabScreens() {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ tabBarLabel: "Profil" }}
+        options={{ tabBarLabel: "Profil", title: "Profil" }}
       />
       <Tab.Screen
         name="Home"
         component={HomeStackScreens}
-        options={{ tabBarLabel: "Anasayfa" }}
+        options={{ tabBarLabel: "Anasayfa", title: "Anasayfa" }}
       />
       <Tab.Screen
         name="Advert"
         component={AdvertStackScreens}
-        options={{ tabBarLabel: "İlanlar" }}
+        options={{ tabBarLabel: "İlanlar", title: "İlanlar" }}
       />
       <Tab.Screen
         name="Application"
         component={ApplicationsStackScreen}
-        options={{ tabBarLabel: "Başvurularım" }}
+        options={{ tabBarLabel: "Başvurularım", title: "Başvurularım" }}
       />
     </Tab.Navigator>
   );

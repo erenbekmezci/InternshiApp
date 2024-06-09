@@ -27,7 +27,7 @@ const ApplicantProfileScreen = ({ route, navigation }) => {
         setApplicant(response.data.applicant);
         setApplication(response.data.application);
       } catch (error) {
-        console.error("Error fetching applicant profile:", error);
+        console.error("Başvuran profili getirilirken hata oluştu:", error);
       } finally {
         setLoading(false);
       }
@@ -42,11 +42,11 @@ const ApplicantProfileScreen = ({ route, navigation }) => {
         status,
       });
       setApplication(response.data);
-      Alert.alert("Success", `Application ${status}`);
+      Alert.alert("Başarılı", `Başvuru ${status}`);
       navigation.goBack();
     } catch (error) {
-      console.error("Error updating application status:", error);
-      Alert.alert("Error", "Failed to update application status");
+      console.error("Başvuru durumu güncellenirken hata oluştu:", error);
+      Alert.alert("Hata", "Başvuru durumu güncellenemedi");
     }
   };
 
@@ -64,7 +64,7 @@ const ApplicantProfileScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Text>No applicant or application found.</Text>
+          <Text>Başvuran veya başvuru bulunamadı.</Text>
         </View>
       </SafeAreaView>
     );
@@ -83,16 +83,16 @@ const ApplicantProfileScreen = ({ route, navigation }) => {
           <Text style={styles.name}>{applicant.username}</Text>
           <View style={styles.contactInfo}>
             <Text style={styles.contactText}>Email: {applicant.email}</Text>
-            <Text style={styles.contactText}>Phone: {applicant.phone}</Text>
+            <Text style={styles.contactText}>Telefon: {applicant.phone}</Text>
           </View>
           <View style={styles.detailsContainer}>
-            <Text style={styles.detailsTitle}>Resume</Text>
+            <Text style={styles.detailsTitle}>Özgeçmiş</Text>
             <Text style={styles.detailsContent}>{applicant.resume}</Text>
-            <Text style={styles.detailsTitle}>Education</Text>
+            <Text style={styles.detailsTitle}>Eğitim</Text>
             <Text style={styles.detailsContent}>{applicant.education}</Text>
-            <Text style={styles.detailsTitle}>Application Status</Text>
+            <Text style={styles.detailsTitle}>Başvuru Durumu</Text>
             <Text style={styles.detailsContent}>{application.status}</Text>
-            <Text style={styles.detailsTitle}>Application Date</Text>
+            <Text style={styles.detailsTitle}>Başvuru Tarihi</Text>
             <Text style={styles.detailsContent}>
               {new Date(application.createdAt).toLocaleDateString()}
             </Text>
@@ -102,13 +102,13 @@ const ApplicantProfileScreen = ({ route, navigation }) => {
               style={[styles.button, styles.acceptButton]}
               onPress={() => handleUpdateStatus("accepted")}
             >
-              <Text style={styles.buttonText}>Accept</Text>
+              <Text style={styles.buttonText}>Kabul Et</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.rejectButton]}
               onPress={() => handleUpdateStatus("rejected")}
             >
-              <Text style={styles.buttonText}>Reject</Text>
+              <Text style={styles.buttonText}>Reddet</Text>
             </TouchableOpacity>
           </View>
         </View>

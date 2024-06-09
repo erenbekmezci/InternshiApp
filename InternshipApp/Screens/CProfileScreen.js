@@ -13,7 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import api from "../api";
 import { AuthContext } from "../src/context/AuthContext";
-import {URL} from '@env';
+import { URL } from '@env';
 
 const defaultProfilePic = `http://${URL}:3000/uploads/default_profile.jpg`;
 
@@ -68,10 +68,10 @@ const CProfileScreen = ({ navigation }) => {
       });
       setCompanyInfo(response.data);
       setIsEditing(false);
-      Alert.alert("Success", "Profile updated successfully");
+      Alert.alert("Başarılı", "Profil başarıyla güncellendi");
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "An error occurred while updating profile");
+      Alert.alert("Hata", "Profil güncellenirken bir hata oluştu");
     }
   };
 
@@ -105,13 +105,13 @@ const CProfileScreen = ({ navigation }) => {
           {isEditing && (
             <View style={styles.photoButtons}>
               <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
-                <Text style={styles.photoButtonText}>Change Photo</Text>
+                <Text style={styles.photoButtonText}>Fotoğrafı Değiştir</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.photoButton}
                 onPress={removeImage}
               >
-                <Text style={styles.photoButtonText}>Remove Photo</Text>
+                <Text style={styles.photoButtonText}>Fotoğrafı Kaldır</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -122,7 +122,7 @@ const CProfileScreen = ({ navigation }) => {
               style={styles.actionButton}
               onPress={() => setIsEditing(true)}
             >
-              <Text style={styles.actionButtonText}>Edit Profile</Text>
+              <Text style={styles.actionButtonText}>Profili Düzenle</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
@@ -135,7 +135,7 @@ const CProfileScreen = ({ navigation }) => {
             <>
               <TextInput
                 style={styles.input}
-                placeholder="Company Name"
+                placeholder="Şirket Adı"
                 value={companyInfo.companyName}
                 onChangeText={(text) =>
                   setCompanyInfo({ ...companyInfo, companyName: text })
@@ -151,7 +151,7 @@ const CProfileScreen = ({ navigation }) => {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Phone"
+                placeholder="Telefon"
                 value={companyInfo.phone}
                 onChangeText={(text) =>
                   setCompanyInfo({ ...companyInfo, phone: text })
@@ -159,7 +159,7 @@ const CProfileScreen = ({ navigation }) => {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Company Description"
+                placeholder="Şirket Açıklaması"
                 value={companyInfo.companyDetails}
                 onChangeText={(text) =>
                   setCompanyInfo({ ...companyInfo, companyDetails: text })
@@ -167,7 +167,7 @@ const CProfileScreen = ({ navigation }) => {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Location"
+                placeholder="Konum"
                 value={companyInfo.location}
                 onChangeText={(text) =>
                   setCompanyInfo({ ...companyInfo, location: text })
@@ -178,13 +178,13 @@ const CProfileScreen = ({ navigation }) => {
                   style={styles.saveButton}
                   onPress={handleUpdate}
                 >
-                  <Text style={styles.saveButtonText}>Save</Text>
+                  <Text style={styles.saveButtonText}>Kaydet</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.cancelButton}
                   onPress={() => setIsEditing(false)}
                 >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                  <Text style={styles.cancelButtonText}>İptal</Text>
                 </TouchableOpacity>
               </View>
             </>
@@ -196,15 +196,15 @@ const CProfileScreen = ({ navigation }) => {
                   Email: {companyInfo.email}
                 </Text>
                 <Text style={styles.contactText}>
-                  Phone: {companyInfo.phone}
+                  Telefon: {companyInfo.phone}
                 </Text>
               </View>
               <View style={styles.detailsContainer}>
-                <Text style={styles.detailsTitle}>Company Description</Text>
+                <Text style={styles.detailsTitle}>Şirket Açıklaması</Text>
                 <Text style={styles.detailsContent}>
                   {companyInfo.companyDetails}
                 </Text>
-                <Text style={styles.detailsTitle}>Location</Text>
+                <Text style={styles.detailsTitle}>Konum</Text>
                 <Text style={styles.detailsContent}>
                   {companyInfo.location}
                 </Text>
@@ -212,7 +212,7 @@ const CProfileScreen = ({ navigation }) => {
             </>
           )}
           <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-            <Text style={styles.logoutButtonText}>Logout</Text>
+            <Text style={styles.logoutButtonText}>Çıkış Yap</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

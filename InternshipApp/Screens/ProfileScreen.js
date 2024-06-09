@@ -124,7 +124,7 @@ const ProfileScreen = ({ navigation }) => {
               style={styles.actionButton}
               onPress={() => setIsEditing(true)}
             >
-              <Text style={styles.actionButtonText}>Edit Profile</Text>
+              <Text style={styles.actionButtonText}>Profili Düzenle</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
@@ -188,13 +188,13 @@ const ProfileScreen = ({ navigation }) => {
                   style={styles.saveButton}
                   onPress={handleUpdate}
                 >
-                  <Text style={styles.saveButtonText}>Save</Text>
+                  <Text style={styles.saveButtonText}>Kaydet</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.cancelButton}
                   onPress={() => setIsEditing(false)}
                 >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                  <Text style={styles.cancelButtonText}>İptal</Text>
                 </TouchableOpacity>
               </View>
             </>
@@ -202,21 +202,21 @@ const ProfileScreen = ({ navigation }) => {
             <>
               <Text style={styles.name}>{userInfo.username}</Text>
               <View style={styles.contactInfo}>
-                <Text style={styles.contactText}>Email: {userInfo.email}</Text>
-                <Text style={styles.contactText}>Phone: {userInfo.phone}</Text>
+                <Text style={styles.contactText}>E Posta: {userInfo.email}</Text>
+                <Text style={styles.contactText}>Telefon: {userInfo.phone}</Text>
               </View>
               <View style={styles.detailsContainer}>
-                <Text style={styles.detailsTitle}>Resume</Text>
+                <Text style={styles.detailsTitle}>Özgeçmiş</Text>
                 <Text style={styles.detailsContent}>{userInfo.resume}</Text>
-                <Text style={styles.detailsTitle}>Education</Text>
+                <Text style={styles.detailsTitle}>Eğitim</Text>
                 <Text style={styles.detailsContent}>{userInfo.education}</Text>
-                <Text style={styles.detailsTitle}>Location</Text>
+                <Text style={styles.detailsTitle}>Konum</Text>
                 <Text style={styles.detailsContent}>{userInfo.location}</Text>
               </View>
             </>
           )}
           <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-            <Text style={styles.logoutButtonText}>Logout</Text>
+            <Text style={styles.logoutButtonText}>Çıkış</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

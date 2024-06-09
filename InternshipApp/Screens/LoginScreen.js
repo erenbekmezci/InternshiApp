@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
         value={password}
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>Giriş Yap</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
