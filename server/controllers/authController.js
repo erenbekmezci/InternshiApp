@@ -41,6 +41,7 @@ module.exports.register = async (req, res) => {
       newUser = new User({
         email,
         username,
+        companyName,
         password: hashedPassword,
         phone,
         role,

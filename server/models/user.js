@@ -6,7 +6,7 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true },
     password: { type: String, required: true },
-    photo: { type: String, default: 'default_profile.jpg' },
+    photo: { type: String, default: "default_profile.jpg" },
     role: { type: String, enum: ["user", "company"], required: true },
     phone: { type: String },
     resume: { type: String },
@@ -20,7 +20,7 @@ const userSchema = new Schema(
 const User = mongoose.model("User", userSchema);
 
 const companySchema = new Schema({
-  companyName: { type: String, required: true },
+  companyName: { type: String },
   companyDetails: { type: String },
 });
 
