@@ -1,5 +1,3 @@
-// ProfileScreen.js
-
 import React, { useContext, useState, useEffect } from "react";
 import {
   SafeAreaView,
@@ -15,7 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import api from "../api";
 import { AuthContext } from "../src/context/AuthContext";
-import {URL} from '@env';
+import { URL } from "@env";
 
 const defaultProfilePic = `http://${URL}:3000/uploads/default_profile.jpg`;
 
@@ -39,7 +37,7 @@ const ProfileScreen = ({ navigation }) => {
           setImage(defaultProfilePic);
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching user data:", error);
       }
     };
 
@@ -49,9 +47,9 @@ const ProfileScreen = ({ navigation }) => {
   const handleUpdate = async () => {
     try {
       const formData = new FormData();
-      for (const key in userInfo) {
+      Object.keys(userInfo).forEach((key) => {
         formData.append(key, userInfo[key]);
-      }
+      });
       if (image && image !== defaultProfilePic) {
         const uriParts = image.split(".");
         const fileType = uriParts[uriParts.length - 1];
@@ -72,7 +70,7 @@ const ProfileScreen = ({ navigation }) => {
       setIsEditing(false);
       Alert.alert("Success", "Profile updated successfully");
     } catch (error) {
-      console.error(error);
+      console.error("Error updating profile:", error);
       Alert.alert("Error", "An error occurred while updating profile");
     }
   };
@@ -98,12 +96,7 @@ const ProfileScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.profilePicContainer}>
-          <Image
-            source={{
-              uri: image,
-            }}
-            style={styles.profilePic}
-          />
+          <Image source={{ uri: image }} style={styles.profilePic} />
           {isEditing && (
             <View style={styles.photoButtons}>
               <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
@@ -202,8 +195,12 @@ const ProfileScreen = ({ navigation }) => {
             <>
               <Text style={styles.name}>{userInfo.username}</Text>
               <View style={styles.contactInfo}>
-                <Text style={styles.contactText}>E Posta: {userInfo.email}</Text>
-                <Text style={styles.contactText}>Telefon: {userInfo.phone}</Text>
+                <Text style={styles.contactText}>
+                  E Posta: {userInfo.email}
+                </Text>
+                <Text style={styles.contactText}>
+                  Telefon: {userInfo.phone}
+                </Text>
               </View>
               <View style={styles.detailsContainer}>
                 <Text style={styles.detailsTitle}>Özgeçmiş</Text>

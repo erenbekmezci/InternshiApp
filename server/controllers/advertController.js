@@ -45,7 +45,10 @@ exports.getAdverts = async (req, res) => {
 
 exports.getAdvertsById = async (req, res) => {
   try {
-    const advert = await Advert.findById(req.params.id);
+    const advert = await Advert.findById(req.params.id).populate(
+      "companyId",
+      "username photo"
+    );
     if (!advert) {
       return res.status(404).json({ message: "Advert not found" });
     }
@@ -98,10 +101,7 @@ exports.updateAdvert = async (req, res) => {
 
 exports.getAllAdverts = async (req, res) => {
   try {
-    const adverts = await Advert.find().populate(
-      "companyId",
-      "username photo"
-    );
+    const adverts = await Advert.find().populate("companyId", "username photo");
     res.status(200).json(adverts);
   } catch (error) {
     console.error("Error fetching adverts:", error);
