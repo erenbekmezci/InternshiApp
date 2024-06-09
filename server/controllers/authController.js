@@ -20,7 +20,6 @@ exports.updatePushToken = async (req, res) => {
 };
 
 module.exports.register = async (req, res) => {
-  console.log("asdasdas");
   const { email, username, password, phone, role, companyName, expoPushToken } =
     req.body;
   try {
@@ -28,10 +27,10 @@ module.exports.register = async (req, res) => {
     let newUser;
 
     if (role === "company") {
-      // Şirket ise Company modelini kullanarak kaydedin
       newUser = new Company({
         email,
         username,
+        companyName,
         password: hashedPassword,
         phone,
         role,
@@ -41,7 +40,6 @@ module.exports.register = async (req, res) => {
       newUser = new User({
         email,
         username,
-        companyName,
         password: hashedPassword,
         phone,
         role,
