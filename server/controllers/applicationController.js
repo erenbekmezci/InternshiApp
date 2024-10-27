@@ -6,7 +6,14 @@ exports.getUserApplications = async (req, res) => {
   try {
     const applications = await Application.find({
       userId: req.user.id,
-    }).populate("advertId", "title companyId location");
+    }).populate({
+      path: "advertId",
+      select: "title companyId location",
+      populate: {
+        path: "companyId",
+        select: "username photo",
+      },
+    });
 
     res.status(200).json(applications);
   } catch (error) {
@@ -28,9 +35,14 @@ exports.getMyApplications = async (req, res) => {
 
 exports.getApplicationById = async (req, res) => {
   try {
-    const application = await Application.findById(req.params.id).populate(
-      "advertId"
-    );
+    const application = await Application.findById(req.params.id).populate({
+      path: "advertId",
+      populate: {
+        path: "companyId",
+        select: "username photo",
+      },
+    });
+
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
@@ -46,7 +58,7 @@ exports.getApplicationsByAdvert = async (req, res) => {
   try {
     const applications = await Application.find({
       advertId,
-     //status: "pending",
+      //status: "pending",
     }).populate("userId");
 
     if (!applications) {
@@ -80,6 +92,8 @@ exports.getApplicantProfile = async (req, res) => {
   }
 };
 
+const { sendPushNotification } = require("../utils/notifications");
+
 exports.updateApplicationStatus = async (req, res) => {
   const { applicationId } = req.params;
   const { status } = req.body;
@@ -94,8 +108,21 @@ exports.updateApplicationStatus = async (req, res) => {
     application.status = status;
     await application.save();
 
+    const user = await User.findById(application.userId);
+
+    if (user && user.expoPushToken) {
+      const title = "Başvuru sonucun belli oldu!";
+      const body = "Sonucu görmek için bildirime dokunun.";
+      const data = {
+        targetScreen: "ApplicationDetailsScreen",
+        applicationId: application._id,
+      };
+      await sendPushNotification(user.expoPushToken, title, body, data);
+    }
+
     res.status(200).json(application);
   } catch (error) {
+    console.error("Error updating application status:", error);
     res.status(500).json({ message: error.message });
   }
 };

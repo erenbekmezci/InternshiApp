@@ -1,28 +1,30 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SERVER_URL } from "@env";
+import {URL} from '@env';
 
 const api = axios.create({
-  baseURL: `${SERVER_URL}`, // Backend sunucunuzun URL'sini burada belirtin
+  baseURL: `http://${URL}:3000`,
 });
 
 api.interceptors.request.use(
   async (config) => {
-    console.log("config", config.url);
     const token = await AsyncStorage.getItem("token");
-    console.log("token", token);
-
     if (token) {
-      console.log("yara");
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => {
-    console.log("yarrrrra");
-
     return Promise.reject(error);
   }
 );
+
+export const getPosts = () => api.get("/posts");
+export const createPost = (post) => api.post("/posts", post);
+export const likePost = (postId) => api.post(`/posts/${postId}/like`);
+export const getComments = (postId) => api.get(`/posts/${postId}/comments`);
+export const addComment = (postId, comment) =>
+  api.post(`/posts/${postId}/comments`, { comment });
+export const getLikes = (postId) => api.get(`/posts/${postId}/likes`);
 
 export default api;

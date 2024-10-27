@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const companyController = require("../controllers/companyController");
 const authMiddleware = require("../middleware"); // Auth middleware'inizi buraya ekleyin
+const upload = require("../utils/multer");
 
-// Şirket profilini alma rotası
 router.get("/profile", authMiddleware, companyController.getCompany);
-
-// Şirket profilini güncelleme rotası
-router.put("/profile", authMiddleware, companyController.updateCompany);
-
+router.put(
+  "/profile",
+  authMiddleware,
+  upload.single("photo"),
+  companyController.updateCompany
+);
 module.exports = router;

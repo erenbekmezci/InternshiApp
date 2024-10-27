@@ -38,7 +38,7 @@ const CAdvertDetailsScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
-          <Text>Loading...</Text>
+          <Text>Yükleniyor...</Text>
         </View>
       </SafeAreaView>
     );
@@ -48,7 +48,7 @@ const CAdvertDetailsScreen = ({ route, navigation }) => {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Text>No advert found.</Text>
+          <Text>İlan bulunamadı.</Text>
         </View>
       </SafeAreaView>
     );
@@ -69,13 +69,13 @@ const CAdvertDetailsScreen = ({ route, navigation }) => {
           <Text style={styles.adTitle}>{advert.title}</Text>
           <View style={styles.detailsContainer}>
             <Text style={styles.detailsContent}>{advert.context}</Text>
-            <Text style={styles.detailsTitle}>Skills Required:</Text>
+            <Text style={styles.detailsTitle}>Gerekli Beceriler:</Text>
             <Text style={styles.detailsContent}>{advert.skills}</Text>
-            <Text style={styles.detailsTitle}>Location:</Text>
+            <Text style={styles.detailsTitle}>Konum:</Text>
             <Text style={styles.detailsContent}>{advert.location}</Text>
-            <Text style={styles.detailsTitle}>Start Date:</Text>
+            <Text style={styles.detailsTitle}>Başlangıç Tarihi:</Text>
             <Text style={styles.detailsContent}>{advert.startDate}</Text>
-            <Text style={styles.detailsTitle}>End Date:</Text>
+            <Text style={styles.detailsTitle}>Bitiş Tarihi:</Text>
             <Text style={styles.detailsContent}>{advert.endDate}</Text>
           </View>
           <View style={styles.applicationCountContainer}>
@@ -85,7 +85,7 @@ const CAdvertDetailsScreen = ({ route, navigation }) => {
             </Text>
           </View>
           <Button
-            title="Başvuruları görüntüle"
+            title="Başvuruları Görüntüle"
             onPress={handleViewApplications}
             color="#1C1678"
           />

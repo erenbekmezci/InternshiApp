@@ -7,10 +7,14 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import api from "../api";
+import { URL } from "@env";
+
+const defaultProfilePic = `http://${URL}:3000/uploads/default_profile.jpg`;
 
 const ApplicationsScreen = () => {
   const navigation = useNavigation();
@@ -48,6 +52,14 @@ const ApplicationsScreen = () => {
         })
       }
     >
+      <Image
+        source={{
+          uri: item.advertId.companyId.photo
+            ? `http://${URL}:3000/uploads/${item.advertId.companyId.photo}`
+            : defaultProfilePic,
+        }}
+        style={styles.profilePic}
+      />
       <View style={styles.adInfo}>
         <Text style={styles.adTitle}>{item.advertId.title}</Text>
         <Text style={styles.companyName}>
@@ -100,6 +112,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 1.5,
+  },
+  profilePic: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
   },
   adInfo: {
     flex: 1,

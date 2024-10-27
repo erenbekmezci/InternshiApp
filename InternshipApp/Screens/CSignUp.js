@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -8,7 +8,8 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import api from "../api";
 
 const CSignUp = ({ navigation }) => {
@@ -17,8 +18,93 @@ const CSignUp = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [expoPushToken, setExpoPushToken] = useState("");
+
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [companyNameError, setCompanyNameError] = useState("");
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+  }, []);
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+    return token;
+  };
+
+  const validateForm = () => {
+    let valid = true;
+
+    if (!email) {
+      setEmailError("E-posta gereklidir");
+      valid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Geçerli bir e-posta adresi girin");
+      valid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!password) {
+      setPasswordError("Şifre gereklidir");
+      valid = false;
+    } else if (password.length < 6) {
+      setPasswordError("Şifre en az 6 karakter olmalıdır");
+      valid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!username) {
+      setUsernameError("Kullanıcı adı gereklidir");
+      valid = false;
+    } else {
+      setUsernameError("");
+    }
+
+    if (!phone) {
+      setPhoneError("Telefon numarası gereklidir");
+      valid = false;
+    } else {
+      setPhoneError("");
+    }
+
+    if (!companyName) {
+      setCompanyNameError("Firma adı gereklidir");
+      valid = false;
+    } else {
+      setCompanyNameError("");
+    }
+
+    return valid;
+  };
 
   const handleSignUp = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const response = await api.post(`/auth/register`, {
         email,
@@ -27,16 +113,17 @@ const CSignUp = ({ navigation }) => {
         role: "company",
         phone,
         companyName,
+        expoPushToken,
       });
 
       if (response.status === 201) {
-        Alert.alert("Success", "Registered successfully!");
+        Alert.alert("Başarılı", "Başarıyla kayıt olundu!");
         navigation.navigate("Login");
       } else {
-        Alert.alert("Failed", response.data.message || "Registration failed");
+        Alert.alert("Başarısız", response.data.message || "Kayıt başarısız oldu");
       }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong");
+      Alert.alert("Hata", "Bir şeyler yanlış gitti");
     }
   };
 
@@ -54,6 +141,7 @@ const CSignUp = ({ navigation }) => {
           autoCapitalize="none"
           placeholderTextColor="#999"
         />
+        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -63,6 +151,7 @@ const CSignUp = ({ navigation }) => {
           secureTextEntry
           placeholderTextColor="#999"
         />
+        {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -71,6 +160,7 @@ const CSignUp = ({ navigation }) => {
           onChangeText={setUsername}
           placeholderTextColor="#999"
         />
+        {usernameError ? <Text style={styles.errorText}>{usernameError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -80,6 +170,7 @@ const CSignUp = ({ navigation }) => {
           keyboardType="phone-pad"
           placeholderTextColor="#999"
         />
+        {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -89,6 +180,7 @@ const CSignUp = ({ navigation }) => {
           multiline
           placeholderTextColor="#999"
         />
+        {companyNameError ? <Text style={styles.errorText}>{companyNameError}</Text> : null}
 
         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Hesap Oluştur</Text>
@@ -125,6 +217,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     fontSize: 16,
     color: "#333",
+  },
+  errorText: {
+    width: "100%",
+    color: "red",
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "#1C1678",

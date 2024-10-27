@@ -8,9 +8,11 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import api from "../api";
+import { URL } from "@env";
 
 const AdvertDetailsScreen = ({ route }) => {
   const { advertId } = route.params;
@@ -78,19 +80,27 @@ const AdvertDetailsScreen = ({ route }) => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.infoContainer}>
+          <Image
+            source={{
+              uri: advert.companyId.photo
+                ? `http://${URL}:3000/uploads/${advert.companyId.photo}`
+                : `http://${URL}:3000/uploads/default_profile.jpg`,
+            }}
+            style={styles.profilePic}
+          />
           <Text style={styles.companyName}>{advert.companyId.username}</Text>
           <Text style={styles.adTitle}>{advert.title}</Text>
           <View style={styles.detailsContainer}>
             <Text style={styles.detailsContent}>{advert.context}</Text>
-            <Text style={styles.detailsTitle}>Skills Required:</Text>
+            <Text style={styles.detailsTitle}>Gerekli Beceriler:</Text>
             <Text style={styles.detailsContent}>{advert.skills}</Text>
-            <Text style={styles.detailsTitle}>Location:</Text>
+            <Text style={styles.detailsTitle}>Konum:</Text>
             <Text style={styles.detailsContent}>{advert.location}</Text>
-            <Text style={styles.detailsTitle}>Start Date:</Text>
+            <Text style={styles.detailsTitle}>Başlangıç Tarihi:</Text>
             <Text style={styles.detailsContent}>
               {new Date(advert.startDate).toLocaleDateString()}
             </Text>
-            <Text style={styles.detailsTitle}>End Date:</Text>
+            <Text style={styles.detailsTitle}>Bitiş Tarihi:</Text>
             <Text style={styles.detailsContent}>
               {new Date(advert.endDate).toLocaleDateString()}
             </Text>
@@ -122,6 +132,13 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
   },
   companyName: {
     fontSize: 24,

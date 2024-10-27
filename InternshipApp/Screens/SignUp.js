@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -8,7 +8,8 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { SERVER_URL } from "@env";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import api from "../api";
 
 const SignUp = ({ navigation }) => {
@@ -16,26 +17,104 @@ const SignUp = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [expoPushToken, setExpoPushToken] = useState("");
+
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      console.log("Expo push token:", token); // Token'ı loglayın
+      setExpoPushToken(token);
+    });
+  }, []);
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+    return token;
+  };
+
+  const validateForm = () => {
+    let valid = true;
+
+    if (!email) {
+      setEmailError("E-posta gereklidir");
+      valid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Geçerli bir e-posta adresi girin");
+      valid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!password) {
+      setPasswordError("Şifre gereklidir");
+      valid = false;
+    } else if (password.length < 6) {
+      setPasswordError("Şifre en az 6 karakter olmalıdır");
+      valid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!name) {
+      setNameError("Ad gereklidir");
+      valid = false;
+    } else {
+      setNameError("");
+    }
+
+    if (!phone) {
+      setPhoneError("Telefon numarası gereklidir");
+      valid = false;
+    } else {
+      setPhoneError("");
+    }
+
+    return valid;
+  };
 
   const handleSignUp = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      console.log("e", name);
       const response = await api.post(`/auth/register`, {
         email,
         password,
         username: name,
         role: "user",
         phone,
+        expoPushToken,
       });
 
       if (response.status === 201) {
-        Alert.alert("Success", "Registered successfully!");
+        Alert.alert("Başarılı", "Başarıyla kayıt olundu!");
         navigation.navigate("Login");
       } else {
-        Alert.alert("Failed", response.data.message || "Registration failed");
+        Alert.alert("Başarısız", response.data.message || "Kayıt başarısız oldu");
       }
     } catch (error) {
-      Alert.alert("Error", "Something went wrong");
+      Alert.alert("Hata", "Bir şeyler yanlış gitti");
     }
   };
 
@@ -53,6 +132,7 @@ const SignUp = ({ navigation }) => {
           autoCapitalize="none"
           placeholderTextColor="#999"
         />
+        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -62,6 +142,7 @@ const SignUp = ({ navigation }) => {
           secureTextEntry
           placeholderTextColor="#999"
         />
+        {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -70,6 +151,7 @@ const SignUp = ({ navigation }) => {
           onChangeText={setName}
           placeholderTextColor="#999"
         />
+        {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
 
         <TextInput
           style={styles.input}
@@ -79,6 +161,7 @@ const SignUp = ({ navigation }) => {
           keyboardType="phone-pad"
           placeholderTextColor="#999"
         />
+        {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
 
         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Hesap Oluştur</Text>
@@ -115,6 +198,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     fontSize: 16,
     color: "#333",
+  },
+  errorText: {
+    width: "100%",
+    color: "red",
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "#1C1678",

@@ -1,14 +1,17 @@
-const {User} = require("../models/user");
+const { User } = require("../models/user");
+const fs = require("fs");
+const path = require("path");
 
 module.exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id); // Middleware'den gelen userId'yi kullanıyoruz
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
     res.status(200).json(user);
   } catch (error) {
+    console.error("Error fetching user:", error);
     res
       .status(500)
       .json({ error: "An error occurred while fetching user data" });
@@ -16,22 +19,39 @@ module.exports.getUser = async (req, res) => {
 };
 
 module.exports.updateUser = async (req, res) => {
-  console.log("sasd");
-
   try {
-    console.log("sasd")
+    const updateData = { ...req.body }; // req.body'yi kopyalayarak başlatın
 
-    const user = await User.findByIdAndUpdate(req.user.id, req.body, {
+    if (req.file) {
+      const user = await User.findById(req.user.id);
+
+      if (user.photo && user.photo !== "default_profile.jpg") {
+        fs.unlinkSync(path.join(__dirname, "..", "uploads", user.photo));
+      }
+      updateData.photo = req.file.filename; // Yeni dosya adını ayarlayın
+    } else if (req.body.photo === "default_profile.jpg") {
+      const user = await User.findById(req.user.id);
+
+      if (user.photo && user.photo !== "default_profile.jpg") {
+        fs.unlinkSync(path.join(__dirname, "..", "uploads", user.photo));
+      }
+      updateData.photo = "default_profile.jpg"; // Fotoğrafı varsayılan olarak ayarlayın
+    } else {
+      delete updateData.photo; // photo alanını silin, böylece yanlış değer gönderilmez
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, updateData, {
       new: true,
+      runValidators: true,
     });
-    console.log("sasd");
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
     res.status(200).json(user);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while updating user data" });
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "An error occurred while updating user data" });
   }
 };

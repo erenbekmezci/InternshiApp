@@ -11,6 +11,9 @@ import {
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import api from "../api";
+import { URL } from "@env"; // Ensure you have a .env file with your server URL
+
+const defaultProfilePic = `http://${URL}:3000/uploads/default_profile.jpg`; // Default profile picture URL
 
 const AdvertsScreen = () => {
   const navigation = useNavigation();
@@ -46,6 +49,11 @@ const AdvertsScreen = () => {
 
   const renderItem = ({ item }) => {
     const applied = hasApplied(item._id);
+    const profilePicUrl =
+      item.companyId.photo && item.companyId.photo !== "default_profile.jpg"
+        ? `http://${URL}:3000/uploads/${item.companyId.photo}`
+        : defaultProfilePic;
+
     return (
       <TouchableOpacity
         style={[styles.adContainer, applied && styles.appliedAdContainer]}
@@ -53,12 +61,7 @@ const AdvertsScreen = () => {
           navigation.navigate("AdvertDetailsScreen", { advertId: item._id })
         }
       >
-        <Image
-          source={{
-            uri: `data:image/jpeg;base64,${item.companyId.profilePicture}`,
-          }}
-          style={styles.profilePic}
-        />
+        <Image source={{ uri: profilePicUrl }} style={styles.profilePic} />
         <View style={styles.adInfo}>
           <Text style={styles.companyName}>{item.companyId.username}</Text>
           <Text style={styles.position}>{item.title}</Text>

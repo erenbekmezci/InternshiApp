@@ -6,11 +6,16 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Image,
+  Button,
 } from "react-native";
 import api from "../api";
+import { URL } from "@env";
+
+const defaultProfilePic = `http://${URL}:3000/uploads/default_profile.jpg`;
 
 const ApplicationDetailsScreen = ({ route }) => {
-  const { applicationId, advertId } = route.params;
+  const { applicationId } = route.params;
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +37,7 @@ const ApplicationDetailsScreen = ({ route }) => {
   if (loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1C1678" />
         </View>
       </SafeAreaView>
@@ -55,29 +60,37 @@ const ApplicationDetailsScreen = ({ route }) => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <View style={styles.infoContainer}>
-          <Text style={styles.adTitle}>{advert.title}</Text>
+          <Image
+            source={{
+              uri: advert.companyId.photo
+                ? `http://${URL}:3000/uploads/${advert.companyId.photo}`
+                : defaultProfilePic,
+            }}
+            style={styles.profilePic}
+          />
           <Text style={styles.companyName}>{advert.companyId.username}</Text>
-          <Text style={styles.detailsContent}>{advert.context}</Text>
-          <Text style={styles.detailsTitle}>Skills Required:</Text>
-          <Text style={styles.detailsContent}>{advert.skills}</Text>
-          <Text style={styles.detailsTitle}>Location:</Text>
-          <Text style={styles.detailsContent}>{advert.location}</Text>
-          <Text style={styles.detailsTitle}>Start Date:</Text>
-          <Text style={styles.detailsContent}>
-            {new Date(advert.startDate).toLocaleDateString()}
-          </Text>
-          <Text style={styles.detailsTitle}>End Date:</Text>
-          <Text style={styles.detailsContent}>
-            {new Date(advert.endDate).toLocaleDateString()}
-          </Text>
-          <Text style={styles.detailsTitle}>Application Date:</Text>
-          <Text style={styles.detailsContent}>
-            {new Date(application.createdAt).toLocaleDateString()}
-          </Text>
-          <Text style={styles.detailsTitle}>Status:</Text>
-          <Text style={styles.detailsContent}>{application.status}</Text>
-        </View>
-        <View style={styles.statusContainer}>
+          <Text style={styles.adTitle}>{advert.title}</Text>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.detailsContent}>{advert.context}</Text>
+            <Text style={styles.detailsTitle}>Gerekli Beceriler:</Text>
+            <Text style={styles.detailsContent}>{advert.skills}</Text>
+            <Text style={styles.detailsTitle}>Konum:</Text>
+            <Text style={styles.detailsContent}>{advert.location}</Text>
+            <Text style={styles.detailsTitle}>Başlangıç Tarihi:</Text>
+            <Text style={styles.detailsContent}>
+              {new Date(advert.startDate).toLocaleDateString()}
+            </Text>
+            <Text style={styles.detailsTitle}>Bitiş Tarihi:</Text>
+            <Text style={styles.detailsContent}>
+              {new Date(advert.endDate).toLocaleDateString()}
+            </Text>
+            <Text style={styles.detailsTitle}>Başvuru Tarihi:</Text>
+            <Text style={styles.detailsContent}>
+              {new Date(application.createdAt).toLocaleDateString()}
+            </Text>
+            <Text style={styles.detailsTitle}>Durumu:</Text>
+            <Text style={styles.detailsContent}>{application.status}</Text>
+          </View>
           {application.status === "accepted" && (
             <Text style={styles.acceptText}>{advert.acceptText}</Text>
           )}
@@ -95,13 +108,26 @@ export default ApplicationDetailsScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F6F5F2",
+    backgroundColor: "#fff",
   },
   container: {
     flex: 1,
+    backgroundColor: "#F6F5F2",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   infoContainer: {
     paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
   },
   adTitle: {
     fontSize: 24,
@@ -137,10 +163,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1.5,
   },
-  statusContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
   acceptText: {
     fontSize: 18,
     color: "#4CAF50",
@@ -149,6 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E8F5E9",
     padding: 15,
     borderRadius: 10,
+    marginTop: 20,
   },
   rejectText: {
     fontSize: 18,
@@ -158,5 +181,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFEBEE",
     padding: 15,
     borderRadius: 10,
+    marginTop: 20,
   },
 });

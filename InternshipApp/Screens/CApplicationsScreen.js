@@ -13,6 +13,7 @@ import {
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import api from "../api";
+import { URL } from "@env";
 
 const CApplicationsScreen = ({ route }) => {
   const { advertId } = route.params;
@@ -56,7 +57,11 @@ const CApplicationsScreen = ({ route }) => {
         }
       >
         <Image
-          source={{ uri: `data:image/jpeg;base64,${applicant.photo}` }}
+          source={{
+            uri: applicant.photo
+              ? `http://${URL}:3000/uploads/${applicant.photo}`
+              : `http://${URL}:3000/uploads/default_profile.jpg`,
+          }}
           style={styles.profilePic}
         />
         <View style={styles.infoContainer}>
@@ -77,20 +82,18 @@ const CApplicationsScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Applications</Text>
-      </View>
+      <View style={styles.header}></View>
       <View style={styles.filterContainer}>
-        <Text style={styles.filterLabel}>Filter by Status:</Text>
+        <Text style={styles.filterLabel}>Duruma göre filtrele:</Text>
         <Picker
           selectedValue={filterStatus}
           style={styles.picker}
           onValueChange={(itemValue) => setFilterStatus(itemValue)}
         >
-          <Picker.Item label="All" value="all" />
-          <Picker.Item label="Pending" value="pending" />
-          <Picker.Item label="Accepted" value="accepted" />
-          <Picker.Item label="Rejected" value="rejected" />
+          <Picker.Item label="Tümü" value="all" />
+          <Picker.Item label="Bekleyen" value="pending" />
+          <Picker.Item label="Kabul Edilenler" value="accepted" />
+          <Picker.Item label="Reddedilenler" value="rejected" />
         </Picker>
       </View>
       {loading ? (
