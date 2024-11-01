@@ -1,5 +1,5 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-<a id="readme-top"></a>
+
 
 
 
@@ -31,7 +31,6 @@
 https://user-images.githubusercontent.com/a097fb64-906d-424c-b41e-f8cf8e80cf3b.mp4
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -44,7 +43,6 @@ https://user-images.githubusercontent.com/a097fb64-906d-424c-b41e-f8cf8e80cf3b.m
 * [![Express.js][Express.js]][Express-url] - The default web framework for building RESTful APIs.
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -82,7 +80,7 @@ To use this project, ensure you have the following installed:
 
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 
